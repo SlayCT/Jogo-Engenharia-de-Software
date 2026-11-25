@@ -1,7 +1,7 @@
 # 🧸 Ateliê dos Bichinhos
 
 <p align="center">
-  <img src="Atelie/assets/atelie-demo.gif" width="750" alt="Demonstração do Ateliê dos Bichinhos">
+  <img src="assets/atelie-demo.gif" width="750" alt="Demonstração do Ateliê dos Bichinhos">
 </p>
 
 <p align="center">
