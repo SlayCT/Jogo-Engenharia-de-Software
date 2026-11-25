@@ -1,0 +1,3185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ateliê dos Bichinhos</title>
+  <link rel="icon" href="Miau.png" type="image/x-icon">
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & TEMAS COZY PIXEL ART (CLARO PASTEL E NOITE 16-BIT)
+       ========================================================================== */
+    :root {
+      --bg-principal: #fdf6e3;
+      --bg-padrao: radial-gradient(#e8d5c4 2px, transparent 2px);
+      --bg-card: #fffdf7;
+      --bg-card-suave: #f7ebd7;
+      --bg-palco: #e8f4f8;
+      --texto-principal: #3b2820;
+      --texto-suave: #6e5244;
+      --borda-pixel: #3b2820;
+      --borda-clara: #ffffff;
+      --sombra-pixel: 4px 4px 0px #3b2820;
+      --sombra-pixel-pequena: 3px 3px 0px #3b2820;
+      --rosa-fofo: #ff7aa2;
+      --rosa-sombra: #c94a70;
+      --lilas-fofo: #b392f0;
+      --lilas-sombra: #7c58bd;
+      --menta-fofo: #74d6a8;
+      --menta-sombra: #429e73;
+      --amarelo-creme: #ffd166;
+      --amarelo-sombra: #c99726;
+      --azul-bebe: #7cc6fe;
+      --foco-anel: #ff4d88;
+    }
+
+    [data-tema="escuro"] {
+      --bg-principal: #1a1b2e;
+      --bg-padrao: radial-gradient(#2d2f4d 2px, transparent 2px);
+      --bg-card: #242640;
+      --bg-card-suave: #2f3252;
+      --bg-palco: #1f2238;
+      --texto-principal: #f8f0e3;
+      --texto-suave: #b8b5d4;
+      --borda-pixel: #0d0e1a;
+      --borda-clara: #494d78;
+      --sombra-pixel: 4px 4px 0px #0d0e1a;
+      --sombra-pixel-pequena: 3px 3px 0px #0d0e1a;
+      --rosa-fofo: #ff759f;
+      --rosa-sombra: #b53a60;
+      --lilas-fofo: #9d7be0;
+      --lilas-sombra: #6343a3;
+      --menta-fofo: #5ec294;
+      --menta-sombra: #32825d;
+      --amarelo-creme: #f2be49;
+      --amarelo-sombra: #a67817;
+      --foco-anel: #ffd166;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      image-rendering: pixelated;
+    }
+
+    body {
+      font-family: "Courier New", Courier, "Lucida Console", monospace;
+      background-color: var(--bg-principal);
+      background-image: var(--bg-padrao);
+      background-size: 20px 20px;
+      color: var(--texto-principal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      letter-spacing: 0.3px;
+    }
+
+    :focus-visible {
+      outline: 3px dashed var(--foco-anel);
+      outline-offset: 3px;
+    }
+
+    /* Moldura estilo Caixa de Diálogo RPG 16-bit */
+    .caixa-rpg {
+      background: var(--bg-card);
+      border: 4px solid var(--borda-pixel);
+      box-shadow: inset 0 0 0 3px var(--borda-clara), var(--sombra-pixel);
+      border-radius: 0;
+    }
+
+    /* ==========================================================================
+       2. CABEÇALHO E AVISO DE SESSÃO
+       ========================================================================== */
+    .aviso-sessao {
+      width: 100%;
+      background: var(--bg-card-suave);
+      border-bottom: 3px solid var(--borda-pixel);
+      text-align: center;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      color: var(--texto-suave);
+      font-weight: 700;
+    }
+
+    .barra-topo {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      z-index: 20;
+    }
+
+    .marca-mini {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      font-size: 1.05rem;
+      background: var(--bg-card);
+      border: 3px solid var(--borda-pixel);
+      box-shadow: var(--sombra-pixel-pequena);
+      padding: 8px 14px;
+      cursor: pointer;
+      color: var(--texto-principal);
+      min-height: 44px;
+      font-family: inherit;
+    }
+
+    .marca-mini:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--borda-pixel);
+    }
+
+    .controles-globais {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-icone {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 3px solid var(--borda-pixel);
+      background: var(--bg-card);
+      color: var(--texto-principal);
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: var(--sombra-pixel-pequena);
+    }
+
+    .btn-icone:hover {
+      background: var(--bg-card-suave);
+    }
+
+    .btn-icone:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--borda-pixel);
+    }
+
+    /* ==========================================================================
+       3. CONTAINER PRINCIPAL E TELAS
+       ========================================================================== */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 16px 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tela {
+      display: none;
+    }
+
+    .tela.ativa {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==========================================================================
+       4. BOTÕES CARTUCHO 16-BIT
+       ========================================================================== */
+    .btn-pixel {
+      min-height: 48px;
+      padding: 10px 20px;
+      border: 3px solid var(--borda-pixel);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2), inset 0 3px 0 rgba(255, 255, 255, 0.45), var(--sombra-pixel);
+      transition: transform 0.08s steps(2);
+      text-decoration: none;
+    }
+
+    .btn-pixel:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-pixel:active {
+      transform: translate(3px, 3px);
+      box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.2), 1px 1px 0 var(--borda-pixel);
+    }
+
+    .btn-rosa { background: var(--rosa-fofo); color: #2b121b; }
+    .btn-lilas { background: var(--lilas-fofo); color: #1d1233; }
+    .btn-menta { background: var(--menta-fofo); color: #123324; }
+    .btn-creme { background: var(--amarelo-creme); color: #3b2820; }
+    .btn-secundario { background: var(--bg-card-suave); color: var(--texto-principal); }
+
+    /* ==========================================================================
+       5. TELA INICIAL
+       ========================================================================== */
+    .hero-inicial {
+      padding: 28px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-top: 6px;
+    }
+
+    .badge-versao {
+      background: var(--amarelo-creme);
+      color: #3b2820;
+      border: 3px solid var(--borda-pixel);
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      font-weight: 900;
+      box-shadow: 2px 2px 0 var(--borda-pixel);
+    }
+
+    .titulo-jogo {
+      font-size: clamp(1.9rem, 4.8vw, 3.1rem);
+      font-weight: 900;
+      line-height: 1.15;
+      color: var(--rosa-fofo);
+      text-shadow: 3px 3px 0 var(--borda-pixel), -1px -1px 0 var(--borda-pixel), 1px -1px 0 var(--borda-pixel), -1px 1px 0 var(--borda-pixel);
+      animation: flutuarPixel 1.6s steps(2) infinite;
+    }
+
+    @keyframes flutuarPixel {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .subtitulo-jogo {
+      max-width: 580px;
+      color: var(--texto-suave);
+      font-size: 0.98rem;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .vitrine-bichinhos-inicio {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: clamp(10px, 3vw, 24px);
+      flex-wrap: wrap;
+      margin: 6px 0;
+    }
+
+    .card-bichinho-inicio {
+      width: 148px;
+      background: var(--bg-card-suave);
+      border: 3px solid var(--borda-pixel);
+      box-shadow: var(--sombra-pixel-pequena);
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: pulinhoPixelInicio 1.4s steps(2) infinite;
+    }
+
+    .card-bichinho-inicio:nth-child(2) { animation-delay: 0.35s; }
+    .card-bichinho-inicio:nth-child(3) { animation-delay: 0.7s; }
+
+    @keyframes pulinhoPixelInicio {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .acoes-iniciais {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* ==========================================================================
+       6. TELA ESCOLHA DO BICHINHO
+       ========================================================================== */
+    .painel-escolha {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .carrossel-bichinhos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .btn-seta {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--borda-pixel);
+      background: var(--amarelo-creme);
+      color: #3b2820;
+      font-family: inherit;
+      font-size: 1.4rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--sombra-pixel-pequena);
+    }
+
+    .btn-seta:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--borda-pixel);
+    }
+
+    .cartao-destaque-bichinho {
+      flex: 1;
+      max-width: 380px;
+      background: var(--bg-palco);
+      border: 3px solid var(--borda-pixel);
+      box-shadow: inset 0 0 0 3px var(--borda-clara);
+      padding: 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .balao-fala {
+      background: var(--bg-card);
+      border: 3px solid var(--borda-pixel);
+      box-shadow: 3px 3px 0 var(--borda-pixel);
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--texto-principal);
+      line-height: 1.35;
+    }
+
+    .config-bichinho-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .campo-grupo {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+
+    .campo-grupo label {
+      font-weight: 900;
+      font-size: 0.95rem;
+    }
+
+    .input-pixel {
+      min-height: 46px;
+      padding: 10px 14px;
+      border: 3px solid var(--borda-pixel);
+      background: var(--bg-card-suave);
+      color: var(--texto-principal);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    /* Botões de Variantes Clássicas das Imagens (Bird1/2/3, Cat1/2/3, Dog1/2/3) */
+    .lista-variantes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-variante {
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 3px solid var(--borda-pixel);
+      background: var(--bg-card-suave);
+      color: var(--texto-principal);
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 2px 2px 0 var(--borda-pixel);
+    }
+
+    .btn-variante.ativa {
+      background: var(--amarelo-creme);
+      color: #3b2820;
+      box-shadow: inset 0 0 0 2px #ffffff, 3px 3px 0 var(--borda-pixel);
+    }
+
+    .amostra-quadrada {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--borda-pixel);
+      display: inline-block;
+    }
+
+    .paleta-cores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quadrado-cor {
+      width: 44px;
+      height: 44px;
+      border: 3px solid var(--borda-pixel);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5), 2px 2px 0 var(--borda-pixel);
+      cursor: pointer;
+    }
+
+    .quadrado-cor.selecionada {
+      transform: translate(-2px, -2px);
+      box-shadow: inset 0 0 0 3px #ffffff, 4px 4px 0 var(--borda-pixel);
+    }
+
+    /* ==========================================================================
+       7. TELA DO ATELIÊ (2 COLUNAS NO DESKTOP / ABAS NO CELULAR)
+       ========================================================================== */
+    .layout-atelie {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      /* Celular/tablet: bichinho fixo no topo, guarda-roupa rolando por baixo */
+      .layout-atelie {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .coluna-palco {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        padding: 8px;
+        gap: 6px;
+      }
+      .cabecalho-palco { gap: 6px; }
+      .etiqueta-nome-bichinho { padding: 4px 8px; font-size: 0.85rem; }
+      .btn-cenario { min-width: 40px; min-height: 40px; font-size: 1rem; }
+      .palco-bichinho {
+        width: min(100%, max(140px, 28vh));
+        width: min(100%, max(140px, 28dvh));
+        max-width: 300px;
+      }
+      .coluna-palco .balao-fala {
+        font-size: 0.72rem;
+        padding: 4px 8px;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .barra-acoes-palco { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      .btn-acao-palco { min-height: 44px; padding: 4px 2px; font-size: 0.62rem; }
+      .btn-acao-palco span:first-child { font-size: 1rem !important; }
+      .coluna-guarda-roupa { padding: 10px; gap: 10px; }
+      .abas-categorias { -webkit-overflow-scrolling: touch; }
+      .grade-pecas {
+        max-height: none;
+        overflow-y: visible;
+        grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+        gap: 8px;
+      }
+      .card-peca { min-height: 100px; padding: 6px 4px; }
+      .card-peca svg { width: 56px; height: 56px; }
+      .nome-peca { font-size: 0.72rem; }
+      main { padding: 8px 8px 24px; }
+      .aviso-sessao { font-size: 0.72rem; padding: 4px 8px; }
+      .barra-topo { padding: 8px; gap: 6px; }
+      .marca-mini { font-size: 0.9rem; padding: 6px 10px; }
+      .btn-icone { padding: 6px 8px; font-size: 0.8rem; }
+    }
+
+    @media (max-width: 520px) {
+      #texto-som, #texto-tema { display: none; }
+    }
+
+    /* Celular deitado: palco ao lado do guarda-roupa */
+    @media (max-width: 860px) and (max-height: 520px) and (orientation: landscape) {
+      .layout-atelie {
+        display: grid;
+        grid-template-columns: 42% 1fr;
+        align-items: start;
+      }
+      .palco-bichinho { width: min(100%, 50vh); width: min(100%, 50dvh); }
+      .coluna-palco .balao-fala { display: none; }
+    }
+
+    .coluna-palco {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .cabecalho-palco {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .etiqueta-nome-bichinho {
+      background: var(--bg-card-suave);
+      border: 3px solid var(--borda-pixel);
+      padding: 6px 12px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 2px 2px 0 var(--borda-pixel);
+    }
+
+    .seletor-cenario {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-cenario {
+      min-width: 44px;
+      min-height: 44px;
+      border: 3px solid var(--borda-pixel);
+      background: var(--bg-card-suave);
+      cursor: pointer;
+      font-size: 1.1rem;
+      box-shadow: 2px 2px 0 var(--borda-pixel);
+    }
+
+    .btn-cenario.ativo {
+      background: var(--amarelo-creme);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--borda-pixel);
+    }
+
+    .palco-bichinho {
+      width: 100%;
+      max-width: 350px;
+      aspect-ratio: 1 / 1;
+      border: 4px solid var(--borda-pixel);
+      background: var(--bg-palco);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 0 3px var(--borda-clara);
+    }
+
+    .palco-bichinho.drag-sobre {
+      outline: 4px dashed var(--rosa-fofo);
+    }
+
+    .palco-bichinho.modo-espelho {
+      border-color: #ff9f1c;
+      box-shadow: 0 0 0 4px var(--amarelo-creme), 6px 6px 0 var(--borda-pixel);
+    }
+
+    .palco-bichinho svg {
+      width: 100%;
+      height: 100%;
+      user-select: none;
+    }
+
+    /* Animação Pixel Art de Pulo em Degraus */
+    .anim-pulo-pixel {
+      animation: puloPixelSteps 0.36s steps(2);
+    }
+
+    @keyframes puloPixelSteps {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+      100% { transform: translateY(0); }
+    }
+
+    .camada-particulas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 15;
+    }
+
+    .particula-pixel {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      animation: subirPixel 1.2s steps(6) forwards;
+    }
+
+    @keyframes subirPixel {
+      0% { opacity: 1; transform: translateY(10px); }
+      100% { opacity: 0; transform: translateY(-130px); }
+    }
+
+    .barra-acoes-palco {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+
+    @media (min-width: 480px) {
+      .barra-acoes-palco {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .btn-acao-palco {
+      min-height: 48px;
+      padding: 8px 6px;
+      border: 3px solid var(--borda-pixel);
+      background: var(--bg-card-suave);
+      color: var(--texto-principal);
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      box-shadow: var(--sombra-pixel-pequena);
+    }
+
+    .btn-acao-palco:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--borda-pixel);
+    }
+
+    .btn-acao-palco.destaque-salvar {
+      background: var(--rosa-fofo);
+      color: #2b121b;
+    }
+
+    /* Coluna Direita: Guarda-Roupa */
+    .coluna-guarda-roupa {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .abas-categorias {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .aba-cat {
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 3px solid var(--borda-pixel);
+      background: var(--bg-card-suave);
+      color: var(--texto-principal);
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.84rem;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 2px 2px 0 var(--borda-pixel);
+    }
+
+    .aba-cat.ativa {
+      background: var(--rosa-fofo);
+      color: #2b121b;
+      transform: translateY(-2px);
+      box-shadow: 3px 4px 0 var(--borda-pixel);
+    }
+
+    .grade-pecas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+      gap: 10px;
+      max-height: 350px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+
+    .card-peca {
+      min-height: 118px;
+      background: var(--bg-card-suave);
+      border: 3px solid var(--borda-pixel);
+      padding: 8px 6px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      text-align: center;
+      position: relative;
+      font-family: inherit;
+      color: var(--texto-principal);
+      box-shadow: 2px 2px 0 var(--borda-pixel);
+    }
+
+    .card-peca:hover {
+      background: var(--bg-card);
+    }
+
+    .card-peca.vestida {
+      background: var(--amarelo-creme);
+      color: #3b2820;
+      box-shadow: inset 0 0 0 2px #ffffff, 3px 3px 0 var(--borda-pixel);
+    }
+
+    .card-peca .selo-vestida {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--rosa-fofo);
+      color: #2b121b;
+      border: 2px solid var(--borda-pixel);
+      font-size: 0.65rem;
+      font-weight: 900;
+      padding: 1px 5px;
+    }
+
+    .card-peca svg {
+      width: 68px;
+      height: 68px;
+      pointer-events: none;
+    }
+
+    .nome-peca {
+      font-size: 0.78rem;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    /* Painel de Recolorir */
+    .painel-recolorir {
+      background: var(--bg-card-suave);
+      border: 3px solid var(--borda-pixel);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cabecalho-recolorir {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      font-weight: 800;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .paleta-recolorir-mini {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quadrado-cor-mini {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--borda-pixel);
+      box-shadow: 2px 2px 0 var(--borda-pixel);
+      cursor: pointer;
+    }
+
+    .quadrado-cor-mini.ativa {
+      transform: translate(-2px, -2px);
+      box-shadow: inset 0 0 0 3px #ffffff, 4px 4px 0 var(--borda-pixel);
+    }
+
+    /* ==========================================================================
+       8. TELA ÁLBUM DE LOOKS (POLAROIDS PIXEL ART)
+       ========================================================================== */
+    .painel-album {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .cabecalho-album {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .grade-polaroids {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .card-polaroid {
+      background: #fffdf7;
+      color: #3b2820;
+      border: 4px solid var(--borda-pixel);
+      box-shadow: var(--sombra-pixel);
+      padding: 10px 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .foto-polaroid {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 3px solid var(--borda-pixel);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .foto-polaroid svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .info-polaroid h3 {
+      font-size: 0.98rem;
+      font-weight: 900;
+    }
+
+    .info-polaroid p {
+      font-size: 0.8rem;
+      color: #6e5244;
+      font-weight: 700;
+    }
+
+    .acoes-polaroid {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-polaroid {
+      flex: 1;
+      min-height: 44px;
+      border: 3px solid var(--borda-pixel);
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.82rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--borda-pixel);
+    }
+
+    .btn-polaroid.abrir { background: var(--lilas-fofo); color: #1d1233; }
+    .btn-polaroid.excluir { background: var(--rosa-fofo); color: #2b121b; flex: 0 0 46px; }
+
+    .estado-vazio {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--texto-suave);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ==========================================================================
+       9. MODAIS & TOAST RPG
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 14, 28, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.aberto {
+      display: flex;
+    }
+
+    .modal-caixa {
+      max-width: 460px;
+      width: 100%;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .lista-dicas {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .toast-carinhoso {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: var(--amarelo-creme);
+      color: #3b2820;
+      border: 4px solid var(--borda-pixel);
+      box-shadow: var(--sombra-pixel);
+      padding: 10px 18px;
+      font-weight: 900;
+      font-size: 0.9rem;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.2s steps(3), opacity 0.2s;
+      max-width: 92vw;
+      text-align: center;
+    }
+
+    .toast-carinhoso.visivel {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       10. ACESSIBILIDADE: REDUÇÃO DE MOVIMENTO
+       ========================================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- (sem localStorage/sessionStorage) -->
+  <div class="aviso-sessao" role="status">
+    🧶 O ateliê fecha quando você sai da página, então tire print dos seus looks favoritos!
+  </div>
+
+  <!-- Barra Superior Global -->
+  <header class="barra-topo">
+    <button type="button" class="marca-mini" id="btn-voltar-inicio" aria-label="Voltar para a tela inicial do Ateliê dos Bichinhos">
+      <span>👾</span>
+      <span>Ateliê Pixel 16-bit</span>
+    </button>
+
+    <div class="controles-globais">
+      <button type="button" class="btn-icone" id="btn-nav-album" aria-label="Abrir Álbum de Looks">
+        <span>📸</span>
+        <span>Álbum (<span id="contador-album-topo">0</span>)</span>
+      </button>
+      <button type="button" class="btn-icone" id="btn-alternar-som" aria-label="Ativar ou desativar sons chiptune" aria-pressed="true">
+        <span id="icone-som">🔊</span>
+        <span id="texto-som">Som</span>
+      </button>
+      <button type="button" class="btn-icone" id="btn-alternar-tema" aria-label="Alternar entre modo claro e modo noite estrelada">
+        <span id="icone-tema">🌙</span>
+        <span id="texto-tema">Noite</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ======================================================================
+         TELA 1: INICIAL
+         ====================================================================== -->
+    <section id="tela-inicial" class="tela ativa" aria-label="Tela Inicial">
+      <div class="hero-inicial caixa-rpg">
+        <span class="badge-versao">★ JOGO TESTE ★</span>
+        <h1 class="titulo-jogo">Ateliê dos Bichinhos</h1>
+        <p class="subtitulo-jogo">
+          Vista a Calopsita, o Gatinho e o Cachorrinho em pixel art 16-bit! Escolha a pelagem clássica, pinte roupinhas e salve Polaroids no seu álbum.
+        </p>
+
+        <!-- Vitrine com os 3 novos bichinhos Pixel Art -->
+        <div class="vitrine-bichinhos-inicio" id="vitrine-inicial" aria-hidden="true"></div>
+
+        <div class="acoes-iniciais">
+          <button type="button" class="btn-pixel btn-rosa" id="btn-comecar-jogar">
+            <span>▶</span>
+            <span>Jogar Agora</span>
+          </button>
+          <button type="button" class="btn-pixel btn-lilas" id="btn-abrir-album-inicio">
+            <span>📸</span>
+            <span>Álbum (<span id="contador-album-inicio">0</span>)</span>
+          </button>
+          <button type="button" class="btn-pixel btn-secundario" id="btn-como-jogar">
+            <span>📜</span>
+            <span>Como Jogar</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TELA 2: ESCOLHA E PERSONALIZAÇÃO DO BICHINHO
+         ====================================================================== -->
+    <section id="tela-escolha" class="tela" aria-label="Escolha do Bichinho">
+      <div class="painel-escolha caixa-rpg">
+        <h2>★ Escolha seu Companheiro Pixel ★</h2>
+
+        <div class="carrossel-bichinhos">
+          <button type="button" class="btn-seta" id="btn-bichinho-anterior" aria-label="Bichinho anterior">◀</button>
+
+          <div class="cartao-destaque-bichinho">
+            <div id="preview-escolha-svg" style="width: 224px; height: 224px;"></div>
+            <h3 id="especie-titulo-escolha" style="font-size: 1.25rem; font-weight: 900;">Calopsita</h3>
+            <p class="balao-fala" id="frase-personalidade-escolha">
+              "Piu-piu! Meu topete já está penteado para o desfile!"
+            </p>
+          </div>
+
+          <button type="button" class="btn-seta" id="btn-bichinho-proximo" aria-label="Próximo bichinho">▶</button>
+        </div>
+
+        <div class="config-bichinho-grid">
+          <div class="campo-grupo">
+            <label for="input-nome-bichinho">✏️ Nome do Bichinho:</label>
+            <input type="text" id="input-nome-bichinho" class="input-pixel" maxlength="16" placeholder="Ex: Piu, Mimi, Totó..." />
+          </div>
+
+          <div class="campo-grupo">
+            <label>🐾 Pelagem / Plumagem Clássica:</label>
+            <div class="lista-variantes" id="lista-variantes-especie" role="radiogroup" aria-label="Escolher variação clássica"></div>
+          </div>
+
+          <div class="campo-grupo">
+            <label>🎨 Ou personalize a cor principal:</label>
+            <div class="paleta-cores" id="paleta-cor-pelo" role="radiogroup" aria-label="Paleta extra de cores"></div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+          <button type="button" class="btn-pixel btn-secundario" id="btn-voltar-de-escolha">
+            <span>◀</span>
+            <span>Voltar</span>
+          </button>
+          <button type="button" class="btn-pixel btn-menta" id="btn-ir-atelie">
+            <span>✨</span>
+            <span>Entrar no Ateliê</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TELA 3: ATELIÊ (TELA PRINCIPAL DE VESTIR)
+         ====================================================================== -->
+    <section id="tela-atelie" class="tela" aria-label="Ateliê de Costura Pixel Art">
+      <div class="layout-atelie">
+        <!-- Coluna do Palco -->
+        <div class="coluna-palco caixa-rpg">
+          <div class="cabecalho-palco">
+            <div class="etiqueta-nome-bichinho">
+              <span id="emoji-especie-atelie">🐤</span>
+              <span id="nome-bichinho-atelie">Piu</span>
+              <button type="button" id="btn-trocar-bichinho" title="Trocar bichinho" aria-label="Trocar de bichinho" style="background:none; border:none; cursor:pointer; font-size:1rem; padding:4px;">🔄</button>
+            </div>
+
+            <!-- Seletor de cenários pixel art -->
+            <div class="seletor-cenario" role="group" aria-label="Escolher cenário pixel art">
+              <button type="button" class="btn-cenario ativo" data-cenario="jardim" aria-label="Cenário Jardim Pixel" title="Jardim Pixel">🌷</button>
+              <button type="button" class="btn-cenario" data-cenario="quarto" aria-label="Cenário Quarto Cozy" title="Quarto Cozy">🏠</button>
+              <button type="button" class="btn-cenario" data-cenario="piquenique" aria-label="Cenário Piquenique 16-bit" title="Piquenique 16-bit">🍓</button>
+              <button type="button" class="btn-cenario" data-cenario="estrelas" aria-label="Cenário Noite Estrelada" title="Noite Estrelada">🌙</button>
+            </div>
+          </div>
+
+          <!-- Palco SVG 32x32 crispEdges -->
+          <div class="palco-bichinho" id="palco-principal" aria-label="Área do bichinho em pixel art. Arraste ou clique nas peças ao lado para vestir.">
+            <div class="camada-particulas" id="camada-particulas" aria-hidden="true"></div>
+            <div id="container-svg-atelie" style="width: 100%; height: 100%;"></div>
+          </div>
+
+          <p class="balao-fala" id="fala-reacao-atelie" style="width: 100%; text-align: center;">
+            "Estou pronto para experimentar looks 16-bit!"
+          </p>
+
+          <!-- Botões de ação -->
+          <div class="barra-acoes-palco">
+            <button type="button" class="btn-acao-palco" id="btn-surpresa" aria-label="Montar look surpresa aleatório">
+              <span style="font-size: 1.2rem;">🎲</span>
+              <span>Surpresa</span>
+            </button>
+            <button type="button" class="btn-acao-palco" id="btn-espelho" aria-label="Ativar Espelho Mágico">
+              <span style="font-size: 1.2rem;">🪞</span>
+              <span>Espelho</span>
+            </button>
+            <button type="button" class="btn-acao-palco" id="btn-limpar" aria-label="Limpar todas as roupas">
+              <span style="font-size: 1.2rem;">🧺</span>
+              <span>Limpar</span>
+            </button>
+            <button type="button" class="btn-acao-palco destaque-salvar" id="btn-abrir-modal-salvar" aria-label="Salvar look no álbum">
+              <span style="font-size: 1.2rem;">📸</span>
+              <span>Salvar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Coluna do Guarda-Roupa -->
+        <div class="coluna-guarda-roupa caixa-rpg">
+          <div class="abas-categorias" role="tablist" aria-label="Categorias de roupas pixel art">
+            <button type="button" class="aba-cat ativa" role="tab" aria-selected="true" data-cat="chapeus">🎩 Chapéus</button>
+            <button type="button" class="aba-cat" role="tab" aria-selected="false" data-cat="oculos">👓 Óculos</button>
+            <button type="button" class="aba-cat" role="tab" aria-selected="false" data-cat="cima">👚 Roupinhas</button>
+            <button type="button" class="aba-cat" role="tab" aria-selected="false" data-cat="baixo">👟 Sapatos</button>
+            <button type="button" class="aba-cat" role="tab" aria-selected="false" data-cat="mao">🧸 Mão</button>
+          </div>
+
+          <div class="grade-pecas" id="grade-pecas" role="region" aria-label="Peças disponíveis na categoria"></div>
+
+          <!-- Recolorir Pixel Art -->
+          <div class="painel-recolorir">
+            <div class="cabecalho-recolorir">
+              <span>🎨 Pintar peça: <strong id="nome-peca-recolorir">Vista uma peça</strong></span>
+              <span style="font-size: 0.78rem; color: var(--texto-suave);">Paleta 16-bit</span>
+            </div>
+            <div class="paleta-recolorir-mini" id="paleta-recolorir-roupa" role="group" aria-label="Cores para recolorir a peça"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TELA 4: ÁLBUM DE LOOKS (POLAROIDS PIXEL ART)
+         ====================================================================== -->
+    <section id="tela-album" class="tela" aria-label="Álbum de Looks Salvos">
+      <div class="painel-album caixa-rpg">
+        <div class="cabecalho-album">
+          <div>
+            <h2>📸 Álbum Pixel (<span id="contador-album-tela">0</span>/24)</h2>
+            <p style="color: var(--texto-suave); font-size: 0.88rem; font-weight: 700;">Reabra qualquer Polaroid para continuar editando no ateliê!</p>
+          </div>
+          <button type="button" class="btn-pixel btn-rosa" id="btn-voltar-atelie-de-album">
+            <span>◀</span>
+            <span>Voltar ao Ateliê</span>
+          </button>
+        </div>
+
+        <div id="container-polaroids" class="grade-polaroids"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: SALVAR LOOK -->
+  <div class="modal-backdrop" id="modal-salvar" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-salvar">
+    <div class="modal-caixa caixa-rpg">
+      <h3 id="titulo-modal-salvar" style="font-size: 1.2rem; font-weight: 900;">📸 Guardar Polaroid Pixel</h3>
+      <p style="color: var(--texto-suave); font-size: 0.9rem; font-weight: 700;">Dê um nome fofo para este look:</p>
+      <input type="text" id="input-nome-look" class="input-pixel" maxlength="24" placeholder="Ex: Passeio na Vila 16-bit" />
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button type="button" class="btn-pixel btn-secundario" id="btn-cancelar-salvar">Cancelar</button>
+        <button type="button" class="btn-pixel btn-rosa" id="btn-confirmar-salvar">Salvar 💖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: COMO JOGAR -->
+  <div class="modal-backdrop" id="modal-ajuda" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-ajuda">
+    <div class="modal-caixa caixa-rpg">
+      <h3 id="titulo-modal-ajuda" style="font-size: 1.2rem; font-weight: 900;">📜 Manual do Ateliê Pixel</h3>
+      <div class="lista-dicas">
+        <p>🐤 <strong>3 Bichinhos Pixel Art:</strong> Escolha entre a Calopsita (Amarelinha, Branquinha ou Cinza), o Gatinho (Siamês, Laranja ou Cinza) e o Cachorrinho (Caramelo, Branquinho ou Grafite).</p>
+        <p>👚 <strong>Vista & Combine:</strong> Clique ou arraste roupinhas, chapéus, óculos, sapatos e itens de mão. Clique de novo na peça em uso para tirar.</p>
+        <p>🎨 <strong>Pintura 16-bit:</strong> Use a paleta abaixo do guarda-roupa para recolorir a peça selecionada.</p>
+        <p>🪞 <strong>Espelho & Surpresa:</strong> Teste looks aleatórios ou admire no Espelho com chuva de corações pixelados!</p>
+      </div>
+      <button type="button" class="btn-pixel btn-menta" id="btn-fechar-ajuda">Entendi! ▶</button>
+    </div>
+  </div>
+
+  <div class="toast-carinhoso" id="toast-mensagem" role="status" aria-live="polite"></div>
+
+  <script>
+    /* ==========================================================================
+       BLOCO 1: ESTRUTURAS DE DADOS EM PIXEL ART (GRADE 32x32)
+       ========================================================================== */
+
+    // Paleta extra de cores fofas para personalização livre do pelo/plumagem
+    const PALETA_PELOS_EXTRA = [
+      { nome: 'Creme Baunilha', hex: '#f8eed6' },
+      { nome: 'Amarelo Canário', hex: '#ffe57f' },
+      { nome: 'Laranja Pêssego', hex: '#f4a261' },
+      { nome: 'Caramelo Dourado', hex: '#f2c179' },
+      { nome: 'Cinza Prata', hex: '#b8bcc2' },
+      { nome: 'Grafite Escuro', hex: '#5c5e63' },
+      { nome: 'Rosa Algodão', hex: '#ffc2d4' },
+      { nome: 'Lilás Pastel', hex: '#d8c2ff' }
+    ];
+
+    // Paleta de 9 cores 16-bit para recolorir roupas e acessórios
+    const PALETA_ROUPAS = [
+      { nome: 'Rosa Morango', hex: '#ff6b97' },
+      { nome: 'Lilás Mágico', hex: '#a682ff' },
+      { nome: 'Azul Céu', hex: '#5bb5ff' },
+      { nome: 'Verde Menta', hex: '#5cd69c' },
+      { nome: 'Amarelo Ouro', hex: '#ffd147' },
+      { nome: 'Laranja Tangerina', hex: '#ff964f' },
+      { nome: 'Vermelho Cereja', hex: '#eb4d55' },
+      { nome: 'Branco Neve', hex: '#f7f5f0' },
+      { nome: 'Azul Marinho', hex: '#3d5a99' }
+    ];
+
+    // Dados das 3 espécies baseadas fielmente nas imagens (Bird1-3, Cat1-3, Dog1-3)
+    const DADOS_BICHINHOS = [
+      {
+        especie: 'calopsita',
+        titulo: 'Calopsita',
+        emoji: '🐤',
+        nomePadrao: 'Piu',
+        variantePadrao: 0,
+        variantes: [
+          {
+            id: 'bird1',
+            nome: 'Amarelinha (Lutino)',
+            cabeca: '#fce373',
+            topete: '#f2cb4b',
+            corpo: '#faf0ca',
+            asa: '#e8d79c',
+            sombra: '#c7b579',
+            bico: '#b8a48c',
+            bochecha: '#f25c19',
+            olho: '#33302e',
+            patas: '#f5cfb6'
+          },
+          {
+            id: 'bird2',
+            nome: 'Branquinha (Albina)',
+            cabeca: '#f7efe6',
+            topete: '#e6dad0',
+            corpo: '#fcf5ed',
+            asa: '#ebe0d5',
+            sombra: '#cfc2b6',
+            bico: '#b8a496',
+            bochecha: '#f25c19',
+            olho: '#33302e',
+            patas: '#f5cfb6'
+          },
+          {
+            id: 'bird3',
+            nome: 'Cinza (Silvestre)',
+            cabeca: '#c4c4c4',
+            topete: '#a3a3a3',
+            corpo: '#e6e0d4',
+            asa: '#cfcabd',
+            sombra: '#9e9b93',
+            bico: '#b0a090',
+            bochecha: '#f25c19',
+            olho: '#33302e',
+            patas: '#ebd2be'
+          }
+        ],
+        frases: {
+          intro: 'Piu-piu! Meu topetinho já está pronto para o desfile!',
+          vestir: 'Piu! Olha como minhas asinhas combinaram com essa peça!',
+          curiosa: 'Piu? O que será que tem dentro desse baú pixelado?',
+          apaixonada: 'Ficou tão lindo que o espelho pediu bis! Piu-piu!'
+        }
+      },
+      {
+        especie: 'gatinho',
+        titulo: 'Gatinho',
+        emoji: '🐱',
+        nomePadrao: 'Mimi',
+        variantePadrao: 0,
+        variantes: [
+          {
+            id: 'cat1',
+            nome: 'Siamês',
+            contorno: '#3b1c0e',
+            pelo: '#f2ece1',
+            sombra: '#d9cfc1',
+            manchas: '#8c6542',
+            focinho: '#735032',
+            barriga: '#f2ece1',
+            olho: '#38a3f5',
+            bochecha: '#f7b2b7',
+            coleira: '#c4bab0',
+            pingente: '#ffb703'
+          },
+          {
+            id: 'cat2',
+            nome: 'Laranja (Malhado)',
+            contorno: '#3b1c0e',
+            pelo: '#f5a662',
+            sombra: '#d68340',
+            manchas: '#d68340',
+            focinho: '#ffffff',
+            barriga: '#ffffff',
+            olho: '#f2d03b',
+            bochecha: '#f7b2b7',
+            coleira: '#5bb5ff',
+            pingente: '#ffe066'
+          },
+          {
+            id: 'cat3',
+            nome: 'Cinza (Tigrado)',
+            contorno: '#242220',
+            pelo: '#7a7a7a',
+            sombra: '#5c5c5c',
+            manchas: '#5c5c5c',
+            focinho: '#ffffff',
+            barriga: '#ffffff',
+            olho: '#9eb88f',
+            bochecha: '#cfa7a7',
+            coleira: '#5bb5ff',
+            pingente: '#b7c7a7'
+          }
+        ],
+        frases: {
+          intro: 'Miau! Esse tecido 16-bit é perfeito para tirar uma soneca!',
+          vestir: 'Miau~ Ficou macio e estiloso! *ronrona em 8-bit*',
+          curiosa: 'Miau? Tem algum novelo de lã escondido nessa aba?',
+          apaixonada: 'Ficou tão lindo que até esqueci minha soneca da tarde!'
+        }
+      },
+      {
+        especie: 'cachorrinho',
+        titulo: 'Cachorrinho',
+        emoji: '🐶',
+        nomePadrao: 'Totó',
+        variantePadrao: 0,
+        variantes: [
+          {
+            id: 'dog1',
+            nome: 'Caramelo (Golden)',
+            contorno: '#361c0b',
+            pelo: '#f5cf86',
+            orelha: '#f2bc63',
+            sombra: '#c7974e',
+            bochecha: '#f26b8a',
+            lingua: '#cc3b4c',
+            coleira: '#14b890',
+            medalha: '#fff05a'
+          },
+          {
+            id: 'dog2',
+            nome: 'Branquinho (Maltês)',
+            contorno: '#2b2623',
+            pelo: '#fafafa',
+            orelha: '#f0f0f0',
+            sombra: '#cfcfcf',
+            bochecha: '#f28593',
+            lingua: '#c95b63',
+            coleira: '#f03e3e',
+            medalha: '#fff3e6'
+          },
+          {
+            id: 'dog3',
+            nome: 'Grafite (Poodle)',
+            contorno: '#171717',
+            pelo: '#666666',
+            orelha: '#595959',
+            sombra: '#474747',
+            bochecha: '#b55b7a',
+            lingua: '#7d384f',
+            coleira: '#1cb08b',
+            medalha: '#dec2ab'
+          }
+        ],
+        frases: {
+          intro: 'Au-au! Meu rabinho não para de abanar de felicidade!',
+          vestir: 'Au! Que roupinha legal, vamos passear pela vila!',
+          curiosa: 'Au? Será que tem biscoitinho no bolso dessa roupa?',
+          apaixonada: 'Au-au!! Estou pronto para a foto mais fofa do álbum!'
+        }
+      }
+    ];
+
+    const FRASES_CARINHOSAS = {
+      espelho: [
+        'Ficou tão lindo que o espelho pediu bis! ★',
+        'Visual 16-bit lendário! Uma obra-prima pixelada! 💖',
+        'Os passarinhos da vila vieram aplaudir esse look! 🌷'
+      ],
+      surpresa: [
+        'Tcharam! Look mágico sorteado pelo baú 16-bit! 🎲',
+        'Misturamos pixels de carinho e cores vibrantes! ✨'
+      ],
+      limpar: [
+        'Roupinhas dobradas e guardadas no baú! 🧺'
+      ]
+    };
+
+    // Catálogo de 25 peças desenhadas em Pixel Art na grade 32x32 (1 unidade = 1 pixel)
+    const DADOS_ROUPAS = [
+      // --- CATEGORIA 1: CHAPÉUS & LAÇOS (zIndex: 70) ---
+      {
+        id: 'chap_boina',
+        nome: 'Boina Artista',
+        categoria: 'chapeus',
+        corBase: '#ff6b97',
+        raridade: 'fofa',
+        estacoes: ['outono', 'inverno'],
+        temas: ['festa', 'cidade'],
+        preco: 15,
+        zIndex: 70,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="14" y="2" width="2" height="1" fill="#3b2820"/>
+            <rect x="11" y="3" width="9" height="1" fill="#3b2820"/>
+            <rect x="9" y="4" width="13" height="2" fill="${cor}"/>
+            <rect x="8" y="5" width="1" height="2" fill="#3b2820"/>
+            <rect x="22" y="5" width="1" height="2" fill="#3b2820"/>
+            <rect x="9" y="6" width="13" height="1" fill="#3b2820"/>
+            <rect x="11" y="4" width="4" height="1" fill="#ffffff" opacity="0.55"/>
+          </g>`
+      },
+      {
+        id: 'chap_sapinho',
+        nome: 'Touca Sapinho',
+        categoria: 'chapeus',
+        corBase: '#5cd69c',
+        raridade: 'brilhante',
+        estacoes: ['primavera', 'verao'],
+        temas: ['chuva', 'aventura'],
+        preco: 25,
+        zIndex: 70,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="2" width="3" height="3" fill="${cor}"/>
+            <rect x="19" y="2" width="3" height="3" fill="${cor}"/>
+            <rect x="11" y="3" width="1" height="1" fill="#222"/>
+            <rect x="20" y="3" width="1" height="1" fill="#222"/>
+            <rect x="9" y="4" width="14" height="3" fill="${cor}"/>
+            <rect x="9" y="7" width="14" height="1" fill="#3b2820"/>
+            <rect x="10" y="6" width="2" height="1" fill="#ff7aa2"/>
+            <rect x="20" y="6" width="2" height="1" fill="#ff7aa2"/>
+          </g>`
+      },
+      {
+        id: 'chap_laco',
+        nome: 'Laço Pixel',
+        categoria: 'chapeus',
+        corBase: '#eb4d55',
+        raridade: 'comum',
+        estacoes: ['primavera', 'verao', 'outono', 'inverno'],
+        temas: ['festa', 'princesa'],
+        preco: 10,
+        zIndex: 70,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="11" y="4" width="3" height="3" fill="${cor}"/>
+            <rect x="18" y="4" width="3" height="3" fill="${cor}"/>
+            <rect x="14" y="5" width="4" height="2" fill="${cor}"/>
+            <rect x="15" y="5" width="2" height="2" fill="#ffffff" opacity="0.5"/>
+            <rect x="11" y="7" width="10" height="1" fill="#3b2820" opacity="0.5"/>
+          </g>`
+      },
+      {
+        id: 'chap_flores',
+        nome: 'Tiara Floral',
+        categoria: 'chapeus',
+        corBase: '#ffd147',
+        raridade: 'fofa',
+        estacoes: ['primavera', 'verao'],
+        temas: ['piquenique', 'princesa'],
+        preco: 20,
+        zIndex: 70,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="9" y="6" width="14" height="1" fill="#429e73"/>
+            <rect x="10" y="5" width="2" height="2" fill="${cor}"/>
+            <rect x="15" y="4" width="2" height="3" fill="#ff6b97"/>
+            <rect x="20" y="5" width="2" height="2" fill="${cor}"/>
+            <rect x="15" y="5" width="1" height="1" fill="#ffffff"/>
+          </g>`
+      },
+      {
+        id: 'chap_coroa',
+        nome: 'Coroa 16-bit',
+        categoria: 'chapeus',
+        corBase: '#ffd147',
+        raridade: 'brilhante',
+        estacoes: ['primavera', 'verao', 'outono', 'inverno'],
+        temas: ['festa', 'princesa'],
+        preco: 30,
+        zIndex: 70,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="11" y="3" width="1" height="2" fill="${cor}"/>
+            <rect x="15" y="2" width="2" height="3" fill="${cor}"/>
+            <rect x="20" y="3" width="1" height="2" fill="${cor}"/>
+            <rect x="11" y="5" width="10" height="2" fill="${cor}"/>
+            <rect x="15" y="5" width="2" height="1" fill="#eb4d55"/>
+            <rect x="11" y="7" width="10" height="1" fill="#3b2820"/>
+          </g>`
+      },
+
+      // --- CATEGORIA 2: ÓCULOS & ROSTO (zIndex: 60) ---
+      {
+        id: 'ocu_coracao',
+        nome: 'Óculos Coração',
+        categoria: 'oculos',
+        corBase: '#ff6b97',
+        raridade: 'fofa',
+        estacoes: ['verao', 'primavera'],
+        temas: ['festa', 'piquenique'],
+        preco: 15,
+        zIndex: 60,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="10" width="4" height="2" fill="${cor}"/>
+            <rect x="11" y="12" width="2" height="1" fill="${cor}"/>
+            <rect x="14" y="10" width="4" height="1" fill="#3b2820"/>
+            <rect x="18" y="10" width="4" height="2" fill="${cor}"/>
+            <rect x="19" y="12" width="2" height="1" fill="${cor}"/>
+            <rect x="11" y="10" width="1" height="1" fill="#ffffff" opacity="0.8"/>
+            <rect x="19" y="10" width="1" height="1" fill="#ffffff" opacity="0.8"/>
+          </g>`
+      },
+      {
+        id: 'ocu_redondo',
+        nome: 'Óculos Nerd',
+        categoria: 'oculos',
+        corBase: '#a682ff',
+        raridade: 'comum',
+        estacoes: ['outono', 'inverno', 'primavera', 'verao'],
+        temas: ['leitura', 'aventura'],
+        preco: 10,
+        zIndex: 60,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="9" width="4" height="1" fill="${cor}"/>
+            <rect x="10" y="12" width="4" height="1" fill="${cor}"/>
+            <rect x="10" y="10" width="1" height="2" fill="${cor}"/>
+            <rect x="13" y="10" width="1" height="2" fill="${cor}"/>
+            <rect x="14" y="10" width="4" height="1" fill="#3b2820"/>
+            <rect x="18" y="9" width="4" height="1" fill="${cor}"/>
+            <rect x="18" y="12" width="4" height="1" fill="${cor}"/>
+            <rect x="18" y="10" width="1" height="2" fill="${cor}"/>
+            <rect x="21" y="10" width="1" height="2" fill="${cor}"/>
+          </g>`
+      },
+      {
+        id: 'ocu_estrela',
+        nome: 'Óculos Estrela',
+        categoria: 'oculos',
+        corBase: '#ffd147',
+        raridade: 'brilhante',
+        estacoes: ['verao'],
+        temas: ['festa'],
+        preco: 22,
+        zIndex: 60,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="11" y="9" width="2" height="4" fill="${cor}"/>
+            <rect x="10" y="10" width="4" height="2" fill="${cor}"/>
+            <rect x="14" y="10" width="4" height="1" fill="#3b2820"/>
+            <rect x="19" y="9" width="2" height="4" fill="${cor}"/>
+            <rect x="18" y="10" width="4" height="2" fill="${cor}"/>
+          </g>`
+      },
+      {
+        id: 'ocu_sol',
+        nome: 'Óculos Escuros',
+        categoria: 'oculos',
+        corBase: '#3d5a99',
+        raridade: 'fofa',
+        estacoes: ['verao', 'primavera'],
+        temas: ['piquenique', 'praia'],
+        preco: 16,
+        zIndex: 60,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="9" y="10" width="14" height="1" fill="#3b2820"/>
+            <rect x="10" y="10" width="4" height="2" fill="${cor}"/>
+            <rect x="18" y="10" width="4" height="2" fill="${cor}"/>
+            <rect x="11" y="10" width="1" height="1" fill="#ffffff"/>
+            <rect x="19" y="10" width="1" height="1" fill="#ffffff"/>
+          </g>`
+      },
+
+      // --- CATEGORIA 3: ROUPINHAS & LENÇOS (zIndex: 40) ---
+      {
+        id: 'roupa_sueter',
+        nome: 'Suéter Listrado',
+        categoria: 'cima',
+        corBase: '#ff6b97',
+        raridade: 'comum',
+        estacoes: ['outono', 'inverno'],
+        temas: ['casa', 'leitura'],
+        preco: 12,
+        zIndex: 40,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="18" width="12" height="7" fill="${cor}"/>
+            <rect x="9" y="19" width="14" height="4" fill="${cor}"/>
+            <rect x="10" y="20" width="12" height="1" fill="#ffffff" opacity="0.8"/>
+            <rect x="10" y="22" width="12" height="1" fill="#ffffff" opacity="0.8"/>
+            <rect x="10" y="25" width="12" height="1" fill="#3b2820"/>
+          </g>`
+      },
+      {
+        id: 'roupa_vestido',
+        nome: 'Vestido Morango',
+        categoria: 'cima',
+        corBase: '#eb4d55',
+        raridade: 'fofa',
+        estacoes: ['primavera', 'verao'],
+        temas: ['piquenique', 'festa'],
+        preco: 20,
+        zIndex: 40,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="11" y="18" width="10" height="3" fill="${cor}"/>
+            <rect x="9" y="21" width="14" height="5" fill="${cor}"/>
+            <rect x="12" y="18" width="8" height="1" fill="#ffffff"/>
+            <rect x="12" y="23" width="1" height="1" fill="#ffd147"/>
+            <rect x="16" y="22" width="1" height="1" fill="#ffd147"/>
+            <rect x="19" y="24" width="1" height="1" fill="#ffd147"/>
+            <rect x="9" y="26" width="14" height="1" fill="#3b2820"/>
+          </g>`
+      },
+      {
+        id: 'roupa_jardineira',
+        nome: 'Jardineira Jeans',
+        categoria: 'cima',
+        corBase: '#5bb5ff',
+        raridade: 'comum',
+        estacoes: ['primavera', 'verao', 'outono'],
+        temas: ['aventura', 'piquenique'],
+        preco: 15,
+        zIndex: 40,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="18" width="12" height="3" fill="#ffffff"/>
+            <rect x="11" y="18" width="2" height="3" fill="${cor}"/>
+            <rect x="19" y="18" width="2" height="3" fill="${cor}"/>
+            <rect x="10" y="21" width="12" height="5" fill="${cor}"/>
+            <rect x="12" y="21" width="1" height="1" fill="#ffd147"/>
+            <rect x="19" y="21" width="1" height="1" fill="#ffd147"/>
+            <rect x="14" y="23" width="4" height="2" fill="#3b2820" opacity="0.25"/>
+          </g>`
+      },
+      {
+        id: 'roupa_capa',
+        nome: 'Capa Estrelada',
+        categoria: 'cima',
+        corBase: '#a682ff',
+        raridade: 'brilhante',
+        estacoes: ['outono', 'inverno'],
+        temas: ['festa', 'aventura'],
+        preco: 28,
+        zIndex: 40,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="18" width="12" height="2" fill="#ffd147"/>
+            <rect x="9" y="20" width="14" height="6" fill="${cor}"/>
+            <rect x="15" y="19" width="2" height="2" fill="#ff6b97"/>
+            <rect x="12" y="22" width="1" height="1" fill="#ffd147"/>
+            <rect x="19" y="24" width="1" height="1" fill="#ffd147"/>
+          </g>`
+      },
+      {
+        id: 'roupa_lenco',
+        nome: 'Lenço Explorador',
+        categoria: 'cima',
+        corBase: '#ff964f',
+        raridade: 'comum',
+        estacoes: ['primavera', 'outono'],
+        temas: ['aventura', 'piquenique'],
+        preco: 12,
+        zIndex: 40,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="17" width="12" height="2" fill="${cor}"/>
+            <rect x="12" y="19" width="8" height="2" fill="${cor}"/>
+            <rect x="14" y="21" width="4" height="1" fill="${cor}"/>
+            <rect x="15" y="18" width="2" height="2" fill="#ffffff" opacity="0.6"/>
+          </g>`
+      },
+      {
+        id: 'roupa_chef',
+        nome: 'Avental Confeiteiro',
+        categoria: 'cima',
+        corBase: '#5cd69c',
+        raridade: 'fofa',
+        estacoes: ['primavera', 'verao', 'outono', 'inverno'],
+        temas: ['chef', 'piquenique'],
+        preco: 18,
+        zIndex: 40,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="18" width="12" height="7" fill="${cor}"/>
+            <rect x="12" y="19" width="8" height="7" fill="#ffffff"/>
+            <rect x="15" y="22" width="2" height="2" fill="#ff6b97"/>
+          </g>`
+      },
+
+      // --- CATEGORIA 4: SAPATOS & MEIAS (zIndex: 35) ---
+      {
+        id: 'sap_botinha',
+        nome: 'Botinhas Chuva',
+        categoria: 'baixo',
+        corBase: '#ffd147',
+        raridade: 'comum',
+        estacoes: ['primavera', 'outono'],
+        temas: ['chuva', 'aventura'],
+        preco: 12,
+        zIndex: 35,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="11" y="26" width="4" height="3" fill="${cor}"/>
+            <rect x="17" y="26" width="4" height="3" fill="${cor}"/>
+            <rect x="11" y="26" width="4" height="1" fill="#ffffff"/>
+            <rect x="17" y="26" width="4" height="1" fill="#ffffff"/>
+            <rect x="11" y="29" width="4" height="1" fill="#3b2820"/>
+            <rect x="17" y="29" width="4" height="1" fill="#3b2820"/>
+          </g>`
+      },
+      {
+        id: 'sap_meias',
+        nome: 'Meias Listra-Doce',
+        categoria: 'baixo',
+        corBase: '#ff6b97',
+        raridade: 'comum',
+        estacoes: ['outono', 'inverno'],
+        temas: ['casa', 'leitura'],
+        preco: 10,
+        zIndex: 35,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="11" y="26" width="4" height="3" fill="#ffffff"/>
+            <rect x="17" y="26" width="4" height="3" fill="#ffffff"/>
+            <rect x="11" y="27" width="4" height="1" fill="${cor}"/>
+            <rect x="17" y="27" width="4" height="1" fill="${cor}"/>
+          </g>`
+      },
+      {
+        id: 'sap_sapatilha',
+        nome: 'Sapatilha Laço',
+        categoria: 'baixo',
+        corBase: '#a682ff',
+        raridade: 'fofa',
+        estacoes: ['primavera', 'verao'],
+        temas: ['festa', 'princesa'],
+        preco: 16,
+        zIndex: 35,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="27" width="5" height="2" fill="${cor}"/>
+            <rect x="17" y="27" width="5" height="2" fill="${cor}"/>
+            <rect x="12" y="27" width="1" height="1" fill="#ffffff"/>
+            <rect x="19" y="27" width="1" height="1" fill="#ffffff"/>
+          </g>`
+      },
+      {
+        id: 'sap_tenis',
+        nome: 'Tênis Retrô',
+        categoria: 'baixo',
+        corBase: '#5bb5ff',
+        raridade: 'fofa',
+        estacoes: ['primavera', 'verao', 'outono'],
+        temas: ['aventura', 'cidade'],
+        preco: 18,
+        zIndex: 35,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="26" width="5" height="2" fill="${cor}"/>
+            <rect x="10" y="28" width="5" height="1" fill="#ffffff"/>
+            <rect x="17" y="26" width="5" height="2" fill="${cor}"/>
+            <rect x="17" y="28" width="5" height="1" fill="#ffffff"/>
+          </g>`
+      },
+      {
+        id: 'sap_pantufla',
+        nome: 'Pantuflas Fofas',
+        categoria: 'baixo',
+        corBase: '#ff964f',
+        raridade: 'brilhante',
+        estacoes: ['inverno', 'outono'],
+        temas: ['casa'],
+        preco: 22,
+        zIndex: 35,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="10" y="26" width="5" height="3" fill="${cor}"/>
+            <rect x="17" y="26" width="5" height="3" fill="${cor}"/>
+            <rect x="11" y="25" width="1" height="1" fill="${cor}"/>
+            <rect x="13" y="25" width="1" height="1" fill="${cor}"/>
+            <rect x="18" y="25" width="1" height="1" fill="${cor}"/>
+            <rect x="20" y="25" width="1" height="1" fill="${cor}"/>
+          </g>`
+      },
+
+      // --- CATEGORIA 5: ITENS DE MÃO / COMPANHEIROS (zIndex: 80) ---
+      {
+        id: 'mao_guarda_chuva',
+        nome: 'Guarda-Chuva',
+        categoria: 'mao',
+        corBase: '#ff6b97',
+        raridade: 'fofa',
+        estacoes: ['primavera', 'outono'],
+        temas: ['chuva'],
+        preco: 18,
+        zIndex: 80,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="25" y="13" width="4" height="1" fill="${cor}"/>
+            <rect x="23" y="14" width="8" height="2" fill="${cor}"/>
+            <rect x="26" y="16" width="1" height="7" fill="#3b2820"/>
+            <rect x="25" y="23" width="2" height="1" fill="#3b2820"/>
+          </g>`
+      },
+      {
+        id: 'mao_sorvete',
+        nome: 'Sorvete 8-bit',
+        categoria: 'mao',
+        corBase: '#ff6b97',
+        raridade: 'comum',
+        estacoes: ['verao', 'primavera'],
+        temas: ['piquenique', 'praia'],
+        preco: 12,
+        zIndex: 80,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="25" y="17" width="4" height="3" fill="${cor}"/>
+            <rect x="26" y="16" width="2" height="1" fill="#eb4d55"/>
+            <rect x="25" y="20" width="4" height="1" fill="#f2bc63"/>
+            <rect x="26" y="21" width="2" height="3" fill="#f2bc63"/>
+          </g>`
+      },
+      {
+        id: 'mao_flor',
+        nome: 'Florzinha Sol',
+        categoria: 'mao',
+        corBase: '#ffd147',
+        raridade: 'fofa',
+        estacoes: ['primavera'],
+        temas: ['piquenique', 'festa'],
+        preco: 16,
+        zIndex: 80,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="26" y="16" width="2" height="4" fill="#ffffff"/>
+            <rect x="25" y="17" width="4" height="2" fill="#ffffff"/>
+            <rect x="26" y="17" width="2" height="2" fill="${cor}"/>
+            <rect x="26" y="20" width="1" height="5" fill="#429e73"/>
+            <rect x="27" y="22" width="2" height="1" fill="#429e73"/>
+          </g>`
+      },
+      {
+        id: 'mao_balao',
+        nome: 'Balão Coração',
+        categoria: 'mao',
+        corBase: '#eb4d55',
+        raridade: 'comum',
+        estacoes: ['primavera', 'verao', 'outono', 'inverno'],
+        temas: ['festa'],
+        preco: 14,
+        zIndex: 80,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="24" y="10" width="2" height="3" fill="${cor}"/>
+            <rect x="27" y="10" width="2" height="3" fill="${cor}"/>
+            <rect x="25" y="11" width="3" height="3" fill="${cor}"/>
+            <rect x="26" y="14" width="1" height="1" fill="${cor}"/>
+            <rect x="26" y="15" width="1" height="8" fill="#3b2820"/>
+          </g>`
+      },
+      {
+        id: 'mao_varinha',
+        nome: 'Varinha Estrela',
+        categoria: 'mao',
+        corBase: '#ffd147',
+        raridade: 'brilhante',
+        estacoes: ['primavera', 'verao', 'outono', 'inverno'],
+        temas: ['princesa', 'festa'],
+        preco: 26,
+        zIndex: 80,
+        renderSVG: (cor) => `
+          <g>
+            <rect x="26" y="14" width="2" height="4" fill="${cor}"/>
+            <rect x="25" y="15" width="4" height="2" fill="${cor}"/>
+            <rect x="26" y="18" width="1" height="7" fill="#ff7aa2"/>
+          </g>`
+      }
+    ];
+
+    /* ==========================================================================
+       BLOCO 2: CLASSES DO DOMÍNIO EM PORTUGUÊS
+       ========================================================================== */
+
+    /**
+     * Representa uma peça de roupa ou acessório em Pixel Art (grade 32x32).
+     */
+    /* Ajuste do tamanho/posição das roupas por espécie (as peças foram desenhadas
+       para gatinho e cachorrinho; a calopsita tem cabeça e corpo menores). */
+    const AJUSTES_VESTUARIO = {
+      calopsita: {
+        chapeus: { s: 0.62, tx: 3.9, ty: 3.5 },
+        oculos:  { s: 0.7,  tx: 1.8, ty: 2.8 },
+        cima:    { s: 0.82, tx: 1.4, ty: 1.2 },
+        baixo:   { s: 0.7,  tx: 2.3, ty: 8.2 },
+        mao:     { s: 0.8,  tx: 0.9, ty: 3.8 }
+      }
+    };
+
+    class Roupa {
+      constructor(dados) {
+        this.id = dados.id;
+        this.nome = dados.nome;
+        this.categoria = dados.categoria;
+        this.corBase = dados.corBase;
+        this.raridade = dados.raridade || 'comum';
+        this.estacoes = dados.estacoes || [];
+        this.temas = dados.temas || [];
+        this.preco = dados.preco || 10;
+        this.zIndex = dados.zIndex || 40;
+        this.renderSVG = dados.renderSVG;
+      }
+
+      gerarSVG(corCustomizada) {
+        return this.renderSVG(corCustomizada || this.corBase);
+      }
+    }
+
+    /**
+     * Guarda as peças desbloqueadas pelo jogador e oferece filtros por categoria, tema e raridade.
+     */
+    class Armario {
+      constructor(listaRoupas = []) {
+        this.pecas = new Map();
+        listaRoupas.forEach((r) => this.adicionar(r));
+      }
+
+      adicionar(roupa) {
+        this.pecas.set(roupa.id, roupa);
+      }
+
+      obterPorId(id) {
+        return this.pecas.get(id) || null;
+      }
+
+      possui(id) {
+        return this.pecas.has(id);
+      }
+
+      filtrar({ categoria = null, tema = null, raridade = null } = {}) {
+        return Array.from(this.pecas.values()).filter((p) => {
+          if (categoria && p.categoria !== categoria) return false;
+          if (tema && !p.temas.includes(tema)) return false;
+          if (raridade && p.raridade !== raridade) return false;
+          return true;
+        });
+      }
+    }
+
+    /**
+     * Representa o bichinho em Pixel Art (Calopsita, Gatinho ou Cachorrinho)
+     * com variantes fiéis às imagens fornecidas, recoloração e roupas em camadas.
+     */
+    class Bichinho {
+      constructor(dadosEspecie) {
+        this.especie = dadosEspecie.especie;
+        this.tituloEspecie = dadosEspecie.titulo;
+        this.emoji = dadosEspecie.emoji;
+        this.nome = dadosEspecie.nomePadrao;
+        this.variantes = dadosEspecie.variantes;
+        this.indiceVariante = dadosEspecie.variantePadrao || 0;
+        this.corCustomizada = null; // Sobrescreve a cor principal se o jogador escolher na paleta extra
+        this.expressao = 'neutra'; // 'neutra' | 'feliz' | 'apaixonada' | 'curiosa'
+        this.cenario = 'jardim';
+        this.roupasVestidas = new Map();
+      }
+
+      /** Retorna a paleta ativa da variante selecionada */
+      obterPaletaAtiva() {
+        const base = { ...this.variantes[this.indiceVariante] };
+        if (this.corCustomizada) {
+          if (this.especie === 'calopsita') {
+            base.cabeca = this.corCustomizada;
+            base.corpo = this.corCustomizada;
+          } else {
+            base.pelo = this.corCustomizada;
+            if (base.orelha) base.orelha = this.corCustomizada;
+          }
+        }
+        return base;
+      }
+
+      definirVariante(indice) {
+        this.indiceVariante = indice;
+        this.corCustomizada = null;
+      }
+
+      definirCorCustomizada(hex) {
+        this.corCustomizada = hex;
+      }
+
+      vestir(roupa, cor = null) {
+        const corFinal = cor || roupa.corBase;
+        this.roupasVestidas.set(roupa.categoria, { roupa, cor: corFinal });
+        this.expressao = 'feliz';
+      }
+
+      remover(categoria) {
+        this.roupasVestidas.delete(categoria);
+        this.expressao = 'curiosa';
+      }
+
+      recolorir(categoria, novaCor) {
+        const item = this.roupasVestidas.get(categoria);
+        if (item) {
+          item.cor = novaCor;
+          this.expressao = 'apaixonada';
+          return true;
+        }
+        return false;
+      }
+
+      limparRoupas() {
+        this.roupasVestidas.clear();
+        this.expressao = 'neutra';
+      }
+
+      /** Gera o fundo pixel art (32x32) do cenário escolhido */
+      gerarFundoSVG() {
+        switch (this.cenario) {
+          case 'quarto':
+            return `
+              <rect width="32" height="32" fill="#faedcd"/>
+              <rect x="0" y="23" width="32" height="9" fill="#d4a373"/>
+              <rect x="0" y="23" width="32" height="1" fill="#3b2820"/>
+              <!-- Janelinha pixel -->
+              <rect x="3" y="4" width="8" height="8" fill="#a2d2ff"/>
+              <rect x="3" y="4" width="8" height="1" fill="#3b2820"/>
+              <rect x="3" y="11" width="8" height="1" fill="#3b2820"/>
+              <rect x="3" y="4" width="1" height="8" fill="#3b2820"/>
+              <rect x="10" y="4" width="1" height="8" fill="#3b2820"/>
+              <rect x="7" y="4" width="1" height="8" fill="#3b2820"/>
+              <rect x="3" y="8" width="8" height="1" fill="#3b2820"/>
+              <!-- Tapetinho -->
+              <rect x="6" y="26" width="20" height="4" fill="#ffafcc"/>`;
+          case 'piquenique':
+            return `
+              <rect width="32" height="32" fill="#cdeac0"/>
+              <rect x="0" y="0" width="32" height="18" fill="#bde0fe"/>
+              <rect x="25" y="3" width="4" height="4" fill="#ffd166"/>
+              <!-- Toalha xadrez pixel -->
+              <rect x="4" y="24" width="24" height="7" fill="#ffffff"/>
+              <rect x="4" y="24" width="6" height="3" fill="#ff758f"/>
+              <rect x="16" y="24" width="6" height="3" fill="#ff758f"/>
+              <rect x="10" y="27" width="6" height="4" fill="#ff758f"/>
+              <rect x="22" y="27" width="6" height="4" fill="#ff758f"/>`;
+          case 'estrelas':
+            return `
+              <rect width="32" height="32" fill="#1d1e36"/>
+              <rect x="0" y="24" width="32" height="8" fill="#2c2e52"/>
+              <rect x="24" y="4" width="4" height="4" fill="#ffd166"/>
+              <rect x="23" y="4" width="2" height="2" fill="#1d1e36"/>
+              <rect x="5" y="5" width="1" height="1" fill="#fff3b0"/>
+              <rect x="11" y="3" width="1" height="1" fill="#fff3b0"/>
+              <rect x="17" y="7" width="1" height="1" fill="#fff3b0"/>
+              <rect x="7" y="13" width="1" height="1" fill="#bde0fe"/>`;
+          case 'jardim':
+          default:
+            return `
+              <rect width="32" height="32" fill="#e8f6ff"/>
+              <!-- Nuvens pixeladas -->
+              <rect x="3" y="4" width="6" height="2" fill="#ffffff"/>
+              <rect x="4" y="3" width="4" height="1" fill="#ffffff"/>
+              <rect x="22" y="6" width="7" height="2" fill="#ffffff"/>
+              <!-- Gramado -->
+              <rect x="0" y="23" width="32" height="9" fill="#b7e4c7"/>
+              <rect x="0" y="23" width="32" height="1" fill="#74c69d"/>
+              <!-- Florzinhas -->
+              <rect x="4" y="26" width="2" height="2" fill="#ff7aa2"/>
+              <rect x="26" y="25" width="2" height="2" fill="#ffd166"/>`;
+        }
+      }
+
+      /**
+       * Desenha fielmente a Calopsita (Bird1, Bird2, Bird3) na grade 32x32.
+       */
+      gerarSpriteCalopsita() {
+        const p = this.obterPaletaAtiva();
+        let olhos = `
+          <rect x="10" y="10" width="1" height="1" fill="${p.olho}"/>
+          <rect x="15" y="10" width="1" height="1" fill="${p.olho}"/>`;
+
+        if (this.expressao === 'feliz') {
+          olhos = `
+            <rect x="10" y="9" width="1" height="1" fill="${p.olho}"/>
+            <rect x="9" y="10" width="1" height="1" fill="${p.olho}"/>
+            <rect x="15" y="9" width="1" height="1" fill="${p.olho}"/>
+            <rect x="16" y="10" width="1" height="1" fill="${p.olho}"/>`;
+        } else if (this.expressao === 'apaixonada') {
+          olhos = `
+            <rect x="9" y="9" width="3" height="2" fill="#ff4d88"/>
+            <rect x="14" y="9" width="3" height="2" fill="#ff4d88"/>`;
+        } else if (this.expressao === 'curiosa') {
+          olhos = `
+            <rect x="10" y="9" width="1" height="2" fill="${p.olho}"/>
+            <rect x="15" y="9" width="1" height="2" fill="${p.olho}"/>`;
+        }
+
+        return `
+          <g>
+            <!-- Sombra no chão -->
+            <rect x="9" y="28" width="16" height="2" fill="#000000" opacity="0.1"/>
+            <!-- Patinhas rosadas -->
+            <rect x="11" y="26" width="1" height="3" fill="${p.patas}"/>
+            <rect x="10" y="28" width="3" height="1" fill="${p.patas}"/>
+            <rect x="15" y="26" width="1" height="3" fill="${p.patas}"/>
+            <rect x="14" y="28" width="3" height="1" fill="${p.patas}"/>
+
+            <!-- Rabinho comprido para a direita (igual às imagens Bird1-3) -->
+            <rect x="18" y="24" width="6" height="2" fill="${p.corpo}"/>
+            <rect x="20" y="25" width="7" height="2" fill="${p.corpo}"/>
+            <rect x="25" y="24" width="2" height="1" fill="${p.corpo}"/>
+            <rect x="19" y="26" width="5" height="1" fill="${p.asa}"/>
+
+            <!-- Corpo fofinho -->
+            <rect x="10" y="15" width="9" height="10" fill="${p.corpo}"/>
+            <rect x="9" y="17" width="11" height="6" fill="${p.corpo}"/>
+            <rect x="11" y="25" width="7" height="1" fill="${p.sombra}"/>
+
+            <!-- Asa lateral com textura pixel -->
+            <rect x="15" y="16" width="5" height="8" fill="${p.asa}"/>
+            <rect x="16" y="17" width="4" height="6" fill="${p.corpo}"/>
+            <rect x="15" y="21" width="2" height="3" fill="${p.sombra}"/>
+            <rect x="20" y="18" width="1" height="4" fill="${p.asa}"/>
+
+            <!-- Topete arrepiado fiel às imagens -->
+            <rect x="15" y="3" width="1" height="2" fill="${p.topete}"/>
+            <rect x="14" y="4" width="1" height="3" fill="${p.topete}"/>
+            <rect x="17" y="4" width="1" height="3" fill="${p.topete}"/>
+            <rect x="12" y="5" width="5" height="2" fill="${p.topete}"/>
+            <rect x="10" y="6" width="8" height="2" fill="${p.topete}"/>
+
+            <!-- Cabeça -->
+            <rect x="10" y="7" width="7" height="8" fill="${p.cabeca}"/>
+            <rect x="9" y="9" width="9" height="5" fill="${p.cabeca}"/>
+            <rect x="17" y="9" width="1" height="6" fill="${p.asa}"/>
+
+            <!-- Bochechas laranja vibrantes -->
+            <rect x="9" y="11" width="2" height="2" fill="${p.bochecha}"/>
+            <rect x="16" y="11" width="2" height="2" fill="${p.bochecha}"/>
+
+            <!-- Olhos -->
+            ${olhos}
+
+            <!-- Bico curvo -->
+            <rect x="11" y="10" width="4" height="1" fill="${p.bico}"/>
+            <rect x="11" y="11" width="3" height="2" fill="${p.bico}"/>
+            <rect x="11" y="13" width="2" height="1" fill="${p.bico}"/>
+          </g>`;
+      }
+
+      /**
+       * Desenha fielmente o Gatinho (Cat1, Cat2, Cat3) na grade 32x32.
+       */
+      gerarSpriteGatinho() {
+        const p = this.obterPaletaAtiva();
+        let olhos = `
+          <rect x="10" y="11" width="1" height="2" fill="${p.contorno}"/>
+          <rect x="11" y="11" width="1" height="2" fill="${p.olho}"/>
+          <rect x="20" y="11" width="1" height="2" fill="${p.olho}"/>
+          <rect x="21" y="11" width="1" height="2" fill="${p.contorno}"/>`;
+
+        if (this.expressao === 'feliz') {
+          olhos = `
+            <rect x="10" y="11" width="2" height="1" fill="${p.contorno}"/>
+            <rect x="20" y="11" width="2" height="1" fill="${p.contorno}"/>`;
+        } else if (this.expressao === 'apaixonada') {
+          olhos = `
+            <rect x="10" y="11" width="2" height="2" fill="#ff4d88"/>
+            <rect x="20" y="11" width="2" height="2" fill="#ff4d88"/>`;
+        } else if (this.expressao === 'curiosa') {
+          olhos = `
+            <rect x="10" y="10" width="2" height="3" fill="${p.olho}"/>
+            <rect x="11" y="11" width="1" height="1" fill="${p.contorno}"/>
+            <rect x="20" y="10" width="2" height="3" fill="${p.olho}"/>
+            <rect x="20" y="11" width="1" height="1" fill="${p.contorno}"/>`;
+        }
+
+        return `
+          <g>
+            <!-- Contorno externo estilo Cat1/Cat2/Cat3 -->
+            <!-- Orelhas pontudas -->
+            <rect x="9" y="4" width="3" height="1" fill="${p.contorno}"/>
+            <rect x="20" y="4" width="3" height="1" fill="${p.contorno}"/>
+            <rect x="8" y="5" width="1" height="2" fill="${p.contorno}"/>
+            <rect x="12" y="5" width="1" height="2" fill="${p.contorno}"/>
+            <rect x="19" y="5" width="1" height="2" fill="${p.contorno}"/>
+            <rect x="23" y="5" width="1" height="2" fill="${p.contorno}"/>
+            <rect x="13" y="7" width="6" height="1" fill="${p.contorno}"/>
+
+            <!-- Interior das orelhas -->
+            <rect x="9" y="5" width="3" height="3" fill="${p.manchas}"/>
+            <rect x="20" y="5" width="3" height="3" fill="${p.manchas}"/>
+
+            <!-- Cabeça -->
+            <rect x="7" y="7" width="1" height="8" fill="${p.contorno}"/>
+            <rect x="24" y="7" width="1" height="8" fill="${p.contorno}"/>
+            <rect x="8" y="8" width="16" height="8" fill="${p.pelo}"/>
+            <rect x="8" y="16" width="16" height="1" fill="${p.contorno}"/>
+
+            <!-- Listrinhas na testa (Cat2/Cat3) -->
+            <rect x="15" y="8" width="2" height="2" fill="${p.sombra}"/>
+
+            <!-- Bigodes laterais de 2 pixels -->
+            <rect x="5" y="11" width="2" height="1" fill="${p.contorno}"/>
+            <rect x="5" y="13" width="2" height="1" fill="${p.contorno}"/>
+            <rect x="25" y="11" width="2" height="1" fill="${p.contorno}"/>
+            <rect x="25" y="13" width="2" height="1" fill="${p.contorno}"/>
+
+            <!-- Mancha do focinho (Siamês escuro ou branco) -->
+            <rect x="12" y="10" width="8" height="5" fill="${p.focinho}"/>
+            <rect x="11" y="11" width="10" height="3" fill="${p.focinho}"/>
+
+            <!-- Bochechas rosadas -->
+            <rect x="9" y="13" width="2" height="1" fill="${p.bochecha}"/>
+            <rect x="21" y="13" width="2" height="1" fill="${p.bochecha}"/>
+
+            <!-- Olhos -->
+            ${olhos}
+
+            <!-- Narizinho e boca 'w' -->
+            <rect x="15" y="13" width="2" height="1" fill="${p.contorno}"/>
+            <rect x="14" y="14" width="1" height="1" fill="${p.contorno}"/>
+            <rect x="17" y="14" width="1" height="1" fill="${p.contorno}"/>
+
+            <!-- Coleira e sininho/pingente -->
+            <rect x="10" y="17" width="12" height="1" fill="${p.coleira}"/>
+            <rect x="15" y="17" width="2" height="2" fill="${p.pingente}"/>
+
+            <!-- Corpo e patinhas -->
+            <rect x="9" y="18" width="1" height="8" fill="${p.contorno}"/>
+            <rect x="22" y="18" width="1" height="8" fill="${p.contorno}"/>
+            <rect x="10" y="18" width="12" height="8" fill="${p.pelo}"/>
+            <rect x="13" y="20" width="6" height="5" fill="${p.barriga}"/>
+
+            <!-- Divisão das patinhas e pontinhas -->
+            <rect x="12" y="23" width="1" height="3" fill="${p.contorno}"/>
+            <rect x="15" y="24" width="2" height="2" fill="${p.contorno}"/>
+            <rect x="19" y="23" width="1" height="3" fill="${p.contorno}"/>
+            <rect x="13" y="25" width="2" height="1" fill="${p.manchas}"/>
+            <rect x="17" y="25" width="2" height="1" fill="${p.manchas}"/>
+            <rect x="10" y="26" width="12" height="1" fill="${p.contorno}"/>
+
+            <!-- Rabinho curvado à direita -->
+            <rect x="23" y="25" width="4" height="1" fill="${p.contorno}"/>
+            <rect x="24" y="21" width="3" height="4" fill="${p.manchas}"/>
+            <rect x="27" y="21" width="1" height="4" fill="${p.contorno}"/>
+            <rect x="24" y="20" width="3" height="1" fill="${p.contorno}"/>
+          </g>`;
+      }
+
+      /**
+       * Desenha fielmente o Cachorrinho (Dog1, Dog2, Dog3) na grade 32x32.
+       */
+      gerarSpriteCachorrinho() {
+        const p = this.obterPaletaAtiva();
+        let olhos = `
+          <rect x="15" y="9" width="1" height="2" fill="${p.contorno}"/>
+          <rect x="21" y="9" width="1" height="2" fill="${p.contorno}"/>`;
+
+        let boca = `
+          <rect x="14" y="12" width="1" height="4" fill="${p.contorno}"/>
+          <rect x="15" y="13" width="6" height="1" fill="${p.contorno}"/>
+          <rect x="21" y="12" width="1" height="1" fill="${p.contorno}"/>
+          <rect x="15" y="14" width="3" height="2" fill="${p.lingua}"/>
+          <rect x="18" y="14" width="1" height="2" fill="${p.contorno}"/>
+          <rect x="15" y="16" width="3" height="1" fill="${p.contorno}"/>`;
+
+        if (this.expressao === 'feliz') {
+          olhos = `
+            <rect x="14" y="9" width="2" height="1" fill="${p.contorno}"/>
+            <rect x="21" y="9" width="2" height="1" fill="${p.contorno}"/>`;
+        } else if (this.expressao === 'apaixonada') {
+          olhos = `
+            <rect x="14" y="9" width="2" height="2" fill="#ff4d88"/>
+            <rect x="21" y="9" width="2" height="2" fill="#ff4d88"/>`;
+        } else if (this.expressao === 'curiosa') {
+          boca = `
+            <rect x="17" y="13" width="2" height="2" fill="${p.lingua}"/>
+            <rect x="16" y="12" width="4" height="1" fill="${p.contorno}"/>`;
+        }
+
+        return `
+          <g>
+            <!-- Contorno da cabeça e orelhas caidinhas (Dog1/Dog2/Dog3) -->
+            <rect x="13" y="4" width="7" height="1" fill="${p.contorno}"/>
+            <rect x="11" y="5" width="11" height="1" fill="${p.contorno}"/>
+            <rect x="9" y="6" width="15" height="1" fill="${p.contorno}"/>
+            <rect x="8" y="7" width="1" height="6" fill="${p.contorno}"/>
+            <rect x="24" y="7" width="1" height="5" fill="${p.contorno}"/>
+
+            <!-- Preenchimento da cabeça -->
+            <rect x="11" y="6" width="11" height="11" fill="${p.pelo}"/>
+            <rect x="9" y="7" width="3" height="7" fill="${p.orelha}"/>
+            <rect x="22" y="7" width="2" height="5" fill="${p.orelha}"/>
+            <rect x="11" y="8" width="1" height="7" fill="${p.sombra}"/>
+            <rect x="9" y="14" width="2" height="1" fill="${p.contorno}"/>
+            <rect x="11" y="16" width="11" height="1" fill="${p.contorno}"/>
+
+            <!-- Bochechas rosadas -->
+            <rect x="13" y="10" width="2" height="1" fill="${p.bochecha}"/>
+            <rect x="22" y="10" width="2" height="1" fill="${p.bochecha}"/>
+
+            <!-- Olhos e focinho -->
+            ${olhos}
+            <rect x="17" y="10" width="3" height="2" fill="${p.contorno}"/>
+            <rect x="18" y="12" width="1" height="1" fill="${p.contorno}"/>
+
+            <!-- Sorriso com linguinha -->
+            ${boca}
+
+            <!-- Coleira com bolinhas brancas e medalha -->
+            <rect x="11" y="17" width="11" height="2" fill="${p.coleira}"/>
+            <rect x="12" y="18" width="1" height="1" fill="#ffffff"/>
+            <rect x="15" y="18" width="1" height="1" fill="#ffffff"/>
+            <rect x="20" y="18" width="1" height="1" fill="#ffffff"/>
+            <rect x="17" y="19" width="4" height="3" fill="${p.sombra}"/>
+            <rect x="18" y="19" width="3" height="2" fill="${p.medalha}"/>
+
+            <!-- Corpo sentado e patinhas -->
+            <rect x="9" y="19" width="1" height="6" fill="${p.contorno}"/>
+            <rect x="23" y="19" width="1" height="6" fill="${p.contorno}"/>
+            <rect x="10" y="19" width="13" height="7" fill="${p.pelo}"/>
+            <rect x="11" y="21" width="1" height="4" fill="${p.sombra}"/>
+            <rect x="21" y="21" width="1" height="4" fill="${p.sombra}"/>
+
+            <!-- Rabinho abanando à esquerda -->
+            <rect x="6" y="23" width="3" height="2" fill="${p.orelha}"/>
+            <rect x="5" y="24" width="1" height="2" fill="${p.contorno}"/>
+            <rect x="6" y="22" width="3" height="1" fill="${p.contorno}"/>
+            <rect x="6" y="25" width="4" height="1" fill="${p.contorno}"/>
+
+            <!-- Base das patinhas -->
+            <rect x="9" y="26" width="15" height="1" fill="${p.contorno}"/>
+          </g>`;
+      }
+
+      /**
+       * Renderiza o SVG completo em grade 32x32 com shape-rendering="crispEdges".
+       */
+      gerarSVGCompleto({ incluirFundo = true, animarPulo = false } = {}) {
+        const roupasOrdenadas = Array.from(this.roupasVestidas.values())
+          .sort((a, b) => a.roupa.zIndex - b.roupa.zIndex);
+
+        const ajuste = AJUSTES_VESTUARIO[this.especie] || {};
+        const camada = (z, cat) => {
+          const svg = roupasOrdenadas.filter((i) => i.roupa.zIndex === z)
+            .map((i) => i.roupa.gerarSVG(i.cor)).join('');
+          const a = ajuste[cat];
+          return (a && svg) ? `<g transform="translate(${a.tx} ${a.ty}) scale(${a.s})">${svg}</g>` : svg;
+        };
+        const camadaBaixo = camada(35, 'baixo');
+        const camadaCima = camada(40, 'cima');
+        const camadaOculos = camada(60, 'oculos');
+        const camadaChapeus = camada(70, 'chapeus');
+        const camadaMao = camada(80, 'mao');
+
+        let spriteAnimal = '';
+        if (this.especie === 'calopsita') spriteAnimal = this.gerarSpriteCalopsita();
+        else if (this.especie === 'gatinho') spriteAnimal = this.gerarSpriteGatinho();
+        else spriteAnimal = this.gerarSpriteCachorrinho();
+
+        return `
+          <svg viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${this.nome}, ${this.tituloEspecie}">
+            ${incluirFundo ? this.gerarFundoSVG() : ''}
+            <g class="${animarPulo ? 'anim-pulo-pixel' : ''}">
+              ${spriteAnimal}
+              ${camadaBaixo}
+              ${camadaCima}
+              ${camadaOculos}
+              ${camadaChapeus}
+              ${camadaMao}
+            </g>
+          </svg>`;
+      }
+    }
+
+    /**
+     * Representa um Look salvo no Álbum (snapshot imutável).
+     */
+    class Look {
+      constructor(nomeLook, bichinho) {
+        this.id = 'look_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        this.nome = nomeLook.trim() || 'Look Pixel 16-bit';
+        this.dataCriacao = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+        this.bichinhoSnapshot = {
+          especie: bichinho.especie,
+          nome: bichinho.nome,
+          indiceVariante: bichinho.indiceVariante,
+          corCustomizada: bichinho.corCustomizada,
+          cenario: bichinho.cenario,
+          roupas: Array.from(bichinho.roupasVestidas.entries()).map(([cat, item]) => ({
+            categoria: cat,
+            roupaId: item.roupa.id,
+            cor: item.cor
+          }))
+        };
+      }
+    }
+
+    /**
+     * Gerencia o Álbum de Looks em memória (limite de 24 Polaroids).
+     */
+    class Album {
+      constructor(limite = 24) {
+        this.limite = limite;
+        this.looks = [];
+      }
+
+      salvar(look) {
+        if (this.looks.length >= this.limite) {
+          return { sucesso: false, motivo: 'O álbum já está cheinho com 24 Polaroids! Apague uma para abrir espaço.' };
+        }
+        this.looks.unshift(look);
+        return { sucesso: true };
+      }
+
+      abrir(id) {
+        return this.looks.find((l) => l.id === id) || null;
+      }
+
+      excluir(id) {
+        this.looks = this.looks.filter((l) => l.id !== id);
+      }
+    }
+
+    /**
+     * Classes base preparadas para as próximas etapas (Loja, Carteira, Morador e Pedido).
+     */
+    class Carteira {
+      constructor(saldoInicial = 50) {
+        this.morangos = saldoInicial;
+      }
+    }
+
+    class Loja {
+      constructor(catalogoCompleto) {
+        this.itens = catalogoCompleto;
+      }
+    }
+
+    class Morador {
+      constructor(nome, especie, frase) {
+        this.nome = nome;
+        this.especie = especie;
+        this.frase = frase;
+      }
+    }
+
+    class Pedido {
+      constructor(morador, tema, estacao) {
+        this.morador = morador;
+        this.tema = tema;
+        this.estacao = estacao;
+      }
+    }
+
+    /**
+     * Sintetizador Chiptune 8-bit (Web Audio API com ondas square e triangle).
+     */
+    class SistemaAudio {
+      constructor() {
+        this.ativo = true;
+        this.ctx = null;
+      }
+
+      iniciarContexto() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      tocarNota8Bit(freq, duracao = 0.1, tipo = 'square', atraso = 0, volume = 0.06) {
+        if (!this.ativo) return;
+        try {
+          this.iniciarContexto();
+          if (!this.ctx) return;
+
+          const agora = this.ctx.currentTime + atraso;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = tipo;
+          osc.frequency.setValueAtTime(freq, agora);
+
+          gain.gain.setValueAtTime(volume, agora);
+          gain.gain.setValueAtTime(0.001, agora + duracao);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(agora);
+          osc.stop(agora + duracao + 0.01);
+        } catch (e) {
+          // Ignora bloqueios de áudio silenciosamente
+        }
+      }
+
+      plim() {
+        this.tocarNota8Bit(587.33, 0.07, 'square', 0, 0.05);     // Ré5
+        this.tocarNota8Bit(880.00, 0.12, 'square', 0.06, 0.05);  // Lá5
+      }
+
+      pop() {
+        this.tocarNota8Bit(330.00, 0.06, 'triangle', 0, 0.09);
+      }
+
+      sininhoMagico() {
+        this.tocarNota8Bit(523.25, 0.08, 'square', 0, 0.05);     // Dó5
+        this.tocarNota8Bit(659.25, 0.08, 'square', 0.07, 0.05);  // Mi5
+        this.tocarNota8Bit(783.99, 0.08, 'square', 0.14, 0.05);  // Sol5
+        this.tocarNota8Bit(1046.50, 0.18, 'square', 0.21, 0.06); // Dó6
+      }
+    }
+
+    /* ==========================================================================
+       BLOCO 3: CONTROLADOR PRINCIPAL DO JOGO (CLASSE JOGO)
+       ========================================================================== */
+    class Jogo {
+      constructor() {
+        const listaRoupas = DADOS_ROUPAS.map((d) => new Roupa(d));
+        this.armario = new Armario(listaRoupas);
+        this.album = new Album(24);
+        this.carteira = new Carteira(50);
+        this.loja = new Loja(listaRoupas);
+        this.audio = new SistemaAudio();
+
+        this.indiceEspecieEscolha = 0;
+        this.bichinhoAtual = new Bichinho(DADOS_BICHINHOS[0]);
+        this.categoriaAtiva = 'chapeus';
+        this.categoriaRecolorirAtiva = null;
+        this.modoEscuro = false;
+        this.timerToast = null;
+
+        this.inicializarInterface();
+      }
+
+      inicializarInterface() {
+        this.renderizarVitrineInicial();
+        this.renderizarPaletaPelosExtra();
+        this.renderizarPaletaRoupas();
+        this.atualizarTelaEscolha();
+        this.atualizarContadoresAlbum();
+
+        // Navegação
+        document.getElementById('btn-voltar-inicio').addEventListener('click', () => {
+          this.audio.pop();
+          this.mostrarTela('tela-inicial');
+        });
+
+        document.getElementById('btn-comecar-jogar').addEventListener('click', () => {
+          this.audio.plim();
+          this.mostrarTela('tela-escolha');
+        });
+
+        document.getElementById('btn-abrir-album-inicio').addEventListener('click', () => {
+          this.audio.pop();
+          this.abrirTelaAlbum();
+        });
+
+        document.getElementById('btn-nav-album').addEventListener('click', () => {
+          this.audio.pop();
+          this.abrirTelaAlbum();
+        });
+
+        document.getElementById('btn-voltar-atelie-de-album').addEventListener('click', () => {
+          this.audio.pop();
+          this.mostrarTela('tela-atelie');
+        });
+
+        // Som e Tema
+        document.getElementById('btn-alternar-som').addEventListener('click', () => {
+          this.audio.ativo = !this.audio.ativo;
+          document.getElementById('icone-som').textContent = this.audio.ativo ? '🔊' : '🔇';
+          document.getElementById('texto-som').textContent = this.audio.ativo ? 'Som' : 'Mudo';
+          document.getElementById('btn-alternar-som').setAttribute('aria-pressed', String(this.audio.ativo));
+          if (this.audio.ativo) this.audio.plim();
+        });
+
+        document.getElementById('btn-alternar-tema').addEventListener('click', () => {
+          this.modoEscuro = !this.modoEscuro;
+          document.documentElement.setAttribute('data-tema', this.modoEscuro ? 'escuro' : 'claro');
+          document.getElementById('icone-tema').textContent = this.modoEscuro ? '☀️' : '🌙';
+          document.getElementById('texto-tema').textContent = this.modoEscuro ? 'Dia' : 'Noite';
+          this.audio.pop();
+        });
+
+        // Modal Ajuda
+        document.getElementById('btn-como-jogar').addEventListener('click', () => {
+          this.audio.pop();
+          document.getElementById('modal-ajuda').classList.add('aberto');
+        });
+
+        document.getElementById('btn-fechar-ajuda').addEventListener('click', () => {
+          this.audio.plim();
+          document.getElementById('modal-ajuda').classList.remove('aberto');
+        });
+
+        // Carrossel de espécies
+        document.getElementById('btn-bichinho-anterior').addEventListener('click', () => {
+          this.indiceEspecieEscolha = (this.indiceEspecieEscolha - 1 + DADOS_BICHINHOS.length) % DADOS_BICHINHOS.length;
+          this.selecionarEspeciePorIndice(this.indiceEspecieEscolha);
+          this.audio.pop();
+        });
+
+        document.getElementById('btn-bichinho-proximo').addEventListener('click', () => {
+          this.indiceEspecieEscolha = (this.indiceEspecieEscolha + 1) % DADOS_BICHINHOS.length;
+          this.selecionarEspeciePorIndice(this.indiceEspecieEscolha);
+          this.audio.pop();
+        });
+
+        document.getElementById('input-nome-bichinho').addEventListener('input', (e) => {
+          const valor = e.target.value.trim();
+          this.bichinhoAtual.nome = valor || DADOS_BICHINHOS[this.indiceEspecieEscolha].nomePadrao;
+        });
+
+        document.getElementById('btn-voltar-de-escolha').addEventListener('click', () => {
+          this.audio.pop();
+          this.mostrarTela('tela-inicial');
+        });
+
+        document.getElementById('btn-ir-atelie').addEventListener('click', () => {
+          this.audio.sininhoMagico();
+          this.entrarNoAtelie();
+        });
+
+        // Ateliê
+        document.getElementById('btn-trocar-bichinho').addEventListener('click', () => {
+          this.audio.pop();
+          this.mostrarTela('tela-escolha');
+        });
+
+        document.querySelectorAll('.btn-cenario').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.btn-cenario').forEach((b) => b.classList.remove('ativo'));
+            btn.classList.add('ativo');
+            this.bichinhoAtual.cenario = btn.dataset.cenario;
+            this.audio.pop();
+            this.atualizarPalcoAtelie(false);
+          });
+        });
+
+        document.querySelectorAll('.aba-cat').forEach((aba) => {
+          aba.addEventListener('click', () => {
+            document.querySelectorAll('.aba-cat').forEach((a) => {
+              a.classList.remove('ativa');
+              a.setAttribute('aria-selected', 'false');
+            });
+            aba.classList.add('ativa');
+            aba.setAttribute('aria-selected', 'true');
+            this.categoriaAtiva = aba.dataset.cat;
+            this.bichinhoAtual.expressao = 'curiosa';
+            this.atualizarFalaBichinho('curiosa');
+            this.audio.pop();
+            this.renderizarGradePecas();
+            this.atualizarPalcoAtelie(false);
+          });
+        });
+
+        document.getElementById('btn-surpresa').addEventListener('click', () => this.gerarLookSurpresa());
+        document.getElementById('btn-espelho').addEventListener('click', () => this.ativarEspelhoMagico());
+        document.getElementById('btn-limpar').addEventListener('click', () => this.limparLookAtual());
+
+        // Modal Salvar Look
+        document.getElementById('btn-abrir-modal-salvar').addEventListener('click', () => {
+          this.audio.pop();
+          const input = document.getElementById('input-nome-look');
+          input.value = `Look de ${this.bichinhoAtual.nome}`;
+          document.getElementById('modal-salvar').classList.add('aberto');
+          setTimeout(() => input.focus(), 50);
+        });
+
+        document.getElementById('btn-cancelar-salvar').addEventListener('click', () => {
+          this.audio.pop();
+          document.getElementById('modal-salvar').classList.remove('aberto');
+        });
+
+        document.getElementById('btn-confirmar-salvar').addEventListener('click', () => this.salvarLookNoAlbum());
+
+        // Drag and Drop no palco
+        const palco = document.getElementById('palco-principal');
+        palco.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          palco.classList.add('drag-sobre');
+        });
+        palco.addEventListener('dragleave', () => palco.classList.remove('drag-sobre'));
+        palco.addEventListener('drop', (e) => {
+          e.preventDefault();
+          palco.classList.remove('drag-sobre');
+          const roupaId = e.dataTransfer.getData('text/plain');
+          if (roupaId) this.alternarPeca(roupaId, true);
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-backdrop.aberto').forEach((m) => m.classList.remove('aberto'));
+          }
+        });
+      }
+
+      mostrarTela(idTela) {
+        document.querySelectorAll('.tela').forEach((t) => t.classList.remove('ativa'));
+        document.getElementById(idTela).classList.add('ativa');
+        window.scrollTo(0, 0);
+      }
+
+      mostrarToast(mensagem) {
+        const toast = document.getElementById('toast-mensagem');
+        toast.textContent = mensagem;
+        toast.classList.add('visivel');
+        clearTimeout(this.timerToast);
+        this.timerToast = setTimeout(() => {
+          toast.classList.remove('visivel');
+        }, 2800);
+      }
+
+      renderizarVitrineInicial() {
+        const container = document.getElementById('vitrine-inicial');
+        container.innerHTML = DADOS_BICHINHOS.map((dados) => {
+          const b = new Bichinho(dados);
+          b.expressao = 'feliz';
+          return `
+            <div class="card-bichinho-inicio">
+              <div style="width: 116px; height: 116px;">
+                ${b.gerarSVGCompleto({ incluirFundo: false })}
+              </div>
+              <strong style="font-size: 0.88rem; margin-top: 4px;">${dados.emoji} ${dados.titulo}</strong>
+            </div>`;
+        }).join('');
+      }
+
+      selecionarEspeciePorIndice(idx) {
+        const dados = DADOS_BICHINHOS[idx];
+        const roupasAntigas = this.bichinhoAtual.roupasVestidas;
+        this.bichinhoAtual = new Bichinho(dados);
+        this.bichinhoAtual.roupasVestidas = roupasAntigas;
+        this.atualizarTelaEscolha();
+      }
+
+      atualizarTelaEscolha() {
+        const dados = DADOS_BICHINHOS[this.indiceEspecieEscolha];
+        document.getElementById('preview-escolha-svg').innerHTML = this.bichinhoAtual.gerarSVGCompleto({ incluirFundo: false });
+        document.getElementById('especie-titulo-escolha').textContent = `${dados.emoji} ${dados.titulo}`;
+        document.getElementById('frase-personalidade-escolha').textContent = `"${dados.frases.intro}"`;
+        document.getElementById('input-nome-bichinho').value = this.bichinhoAtual.nome;
+
+        // Renderiza os 3 botões de pelagem/plumagem clássica das imagens
+        const listaVar = document.getElementById('lista-variantes-especie');
+        listaVar.innerHTML = dados.variantes.map((v, idx) => {
+          const corAmostra = v.cabeca || v.pelo;
+          const ativa = !this.bichinhoAtual.corCustomizada && this.bichinhoAtual.indiceVariante === idx;
+          return `
+            <button type="button" class="btn-variante ${ativa ? 'ativa' : ''}" data-idx="${idx}">
+              <span class="amostra-quadrada" style="background:${corAmostra};"></span>
+              <span>${v.nome}</span>
+            </button>`;
+        }).join('');
+
+        listaVar.querySelectorAll('.btn-variante').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            this.bichinhoAtual.definirVariante(Number(btn.dataset.idx));
+            this.audio.pop();
+            this.atualizarTelaEscolha();
+          });
+        });
+
+        // Sincroniza seleção na paleta extra
+        document.querySelectorAll('#paleta-cor-pelo .quadrado-cor').forEach((btn) => {
+          btn.classList.toggle('selecionada', btn.dataset.cor === this.bichinhoAtual.corCustomizada);
+        });
+      }
+
+      renderizarPaletaPelosExtra() {
+        const container = document.getElementById('paleta-cor-pelo');
+        container.innerHTML = PALETA_PELOS_EXTRA.map((c) => `
+          <button type="button"
+                  class="quadrado-cor"
+                  style="background-color: ${c.hex};"
+                  data-cor="${c.hex}"
+                  aria-label="Cor personalizada ${c.nome}"
+                  title="${c.nome}"></button>
+        `).join('');
+
+        container.querySelectorAll('.quadrado-cor').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            this.bichinhoAtual.definirCorCustomizada(btn.dataset.cor);
+            this.audio.pop();
+            this.atualizarTelaEscolha();
+          });
+        });
+      }
+
+      entrarNoAtelie() {
+        document.getElementById('emoji-especie-atelie').textContent = this.bichinhoAtual.emoji;
+        document.getElementById('nome-bichinho-atelie').textContent = this.bichinhoAtual.nome;
+        this.atualizarFalaBichinho('intro');
+        this.renderizarGradePecas();
+        this.atualizarPalcoAtelie(true);
+        this.mostrarTela('tela-atelie');
+      }
+
+      atualizarFalaBichinho(tipo) {
+        const dados = DADOS_BICHINHOS.find((d) => d.especie === this.bichinhoAtual.especie);
+        const frase = (dados && dados.frases[tipo]) || 'Que dia lindo para costurar pixels!';
+        document.getElementById('fala-reacao-atelie').textContent = `"${frase}"`;
+      }
+
+      renderizarGradePecas() {
+        const pecas = this.armario.filtrar({ categoria: this.categoriaAtiva });
+        const grade = document.getElementById('grade-pecas');
+        const vestidaNaCategoria = this.bichinhoAtual.roupasVestidas.get(this.categoriaAtiva);
+
+        grade.innerHTML = pecas.map((peca) => {
+          const estaVestida = vestidaNaCategoria && vestidaNaCategoria.roupa.id === peca.id;
+          const corPreview = estaVestida ? vestidaNaCategoria.cor : peca.corBase;
+          return `
+            <button type="button"
+                    class="card-peca ${estaVestida ? 'vestida' : ''}"
+                    draggable="true"
+                    data-id="${peca.id}"
+                    aria-pressed="${estaVestida ? 'true' : 'false'}"
+                    aria-label="${peca.nome}${estaVestida ? ' (vestida, clique para tirar)' : ' (clique para vestir)'}">
+              ${estaVestida ? '<span class="selo-vestida">USO</span>' : ''}
+              <svg viewBox="4 1 26 30" shape-rendering="crispEdges" aria-hidden="true">${peca.gerarSVG(corPreview)}</svg>
+              <span class="nome-peca">${peca.nome}</span>
+            </button>`;
+        }).join('');
+
+        grade.querySelectorAll('.card-peca').forEach((card) => {
+          card.addEventListener('click', () => this.alternarPeca(card.dataset.id, false));
+          card.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', card.dataset.id);
+          });
+        });
+
+        this.atualizarPainelRecolorir();
+      }
+
+      alternarPeca(roupaId, forcarVestir = false) {
+        const roupa = this.armario.obterPorId(roupaId);
+        if (!roupa) return;
+
+        const atualNoSlot = this.bichinhoAtual.roupasVestidas.get(roupa.categoria);
+
+        if (atualNoSlot && atualNoSlot.roupa.id === roupa.id && !forcarVestir) {
+          this.bichinhoAtual.remover(roupa.categoria);
+          this.categoriaRecolorirAtiva = null;
+          this.audio.pop();
+          this.mostrarToast(`Tirou: ${roupa.nome} 🧺`);
+          this.renderizarGradePecas();
+          this.atualizarPalcoAtelie(false);
+          return;
+        }
+
+        this.bichinhoAtual.vestir(roupa);
+        this.categoriaRecolorirAtiva = roupa.categoria;
+        this.audio.plim();
+        this.atualizarFalaBichinho('vestir');
+        this.mostrarToast(`Equipou ${roupa.nome}! ★`);
+        this.renderizarGradePecas();
+        this.atualizarPalcoAtelie(true);
+      }
+
+      renderizarPaletaRoupas() {
+        const container = document.getElementById('paleta-recolorir-roupa');
+        container.innerHTML = PALETA_ROUPAS.map((c) => `
+          <button type="button"
+                  class="quadrado-cor-mini"
+                  style="background-color: ${c.hex};"
+                  data-cor="${c.hex}"
+                  aria-label="Pintar peça de ${c.nome}"
+                  title="${c.nome}"></button>
+        `).join('');
+
+        container.querySelectorAll('.quadrado-cor-mini').forEach((btn) => {
+          btn.addEventListener('click', () => this.aplicarCorNaPecaAtiva(btn.dataset.cor));
+        });
+      }
+
+      atualizarPainelRecolorir() {
+        const label = document.getElementById('nome-peca-recolorir');
+        const item = this.categoriaRecolorirAtiva
+          ? this.bichinhoAtual.roupasVestidas.get(this.categoriaRecolorirAtiva)
+          : this.bichinhoAtual.roupasVestidas.get(this.categoriaAtiva);
+
+        if (item) {
+          this.categoriaRecolorirAtiva = item.roupa.categoria;
+          label.textContent = item.roupa.nome;
+          document.querySelectorAll('.quadrado-cor-mini').forEach((b) => {
+            b.classList.toggle('ativa', b.dataset.cor === item.cor);
+          });
+        } else {
+          label.textContent = 'Vista uma peça';
+          document.querySelectorAll('.quadrado-cor-mini').forEach((b) => b.classList.remove('ativa'));
+        }
+      }
+
+      aplicarCorNaPecaAtiva(corHex) {
+        if (!this.categoriaRecolorirAtiva || !this.bichinhoAtual.roupasVestidas.has(this.categoriaRecolorirAtiva)) {
+          this.mostrarToast('Equipe uma roupinha antes de pintar! 🎨');
+          this.audio.pop();
+          return;
+        }
+        this.bichinhoAtual.recolorir(this.categoriaRecolorirAtiva, corHex);
+        this.audio.plim();
+        this.atualizarFalaBichinho('apaixonada');
+        this.renderizarGradePecas();
+        this.atualizarPalcoAtelie(true);
+      }
+
+      atualizarPalcoAtelie(animarPulo = false) {
+        const palco = document.getElementById('palco-principal');
+        palco.classList.remove('modo-espelho');
+        document.getElementById('container-svg-atelie').innerHTML =
+          this.bichinhoAtual.gerarSVGCompleto({ incluirFundo: true, animarPulo });
+      }
+
+      gerarLookSurpresa() {
+        this.bichinhoAtual.limparRoupas();
+        const categorias = ['chapeus', 'oculos', 'cima', 'baixo', 'mao'];
+
+        categorias.forEach((cat) => {
+          if (cat === 'cima' || Math.random() < 0.78) {
+            const opcoes = this.armario.filtrar({ categoria: cat });
+            const escolhida = opcoes[Math.floor(Math.random() * opcoes.length)];
+            const corAleatoria = PALETA_ROUPAS[Math.floor(Math.random() * PALETA_ROUPAS.length)].hex;
+            this.bichinhoAtual.vestir(escolhida, corAleatoria);
+            this.categoriaRecolorirAtiva = cat;
+          }
+        });
+
+        this.bichinhoAtual.expressao = 'apaixonada';
+        this.audio.sininhoMagico();
+        this.soltarParticulasPixel();
+        this.renderizarGradePecas();
+        this.atualizarPalcoAtelie(true);
+        const frase = FRASES_CARINHOSAS.surpresa[Math.floor(Math.random() * FRASES_CARINHOSAS.surpresa.length)];
+        document.getElementById('fala-reacao-atelie').textContent = `"${frase}"`;
+      }
+
+      ativarEspelhoMagico() {
+        this.bichinhoAtual.expressao = 'apaixonada';
+        this.atualizarPalcoAtelie(true);
+        const palco = document.getElementById('palco-principal');
+        palco.classList.add('modo-espelho');
+        this.audio.sininhoMagico();
+        this.soltarParticulasPixel();
+
+        const elogio = FRASES_CARINHOSAS.espelho[Math.floor(Math.random() * FRASES_CARINHOSAS.espelho.length)];
+        document.getElementById('fala-reacao-atelie').textContent = `"${elogio}"`;
+        this.mostrarToast(elogio);
+      }
+
+      limparLookAtual() {
+        if (this.bichinhoAtual.roupasVestidas.size === 0) {
+          this.mostrarToast('O bichinho já está prontinho! 🐾');
+          return;
+        }
+        this.bichinhoAtual.limparRoupas();
+        this.categoriaRecolorirAtiva = null;
+        this.audio.pop();
+        this.renderizarGradePecas();
+        this.atualizarPalcoAtelie(false);
+        const frase = FRASES_CARINHOSAS.limpar[0];
+        document.getElementById('fala-reacao-atelie').textContent = `"${frase}"`;
+        this.mostrarToast(frase);
+      }
+
+      /** Cria partículas de corações e estrelinhas em Pixel Art */
+      soltarParticulasPixel() {
+        const camada = document.getElementById('camada-particulas');
+        const svgsPixel = [
+          `<svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="1" y="1" width="2" height="3" fill="#ff4d88"/><rect x="5" y="1" width="2" height="3" fill="#ff4d88"/><rect x="2" y="2" width="4" height="3" fill="#ff4d88"/><rect x="3" y="5" width="2" height="1" fill="#ff4d88"/></svg>`,
+          `<svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="6" fill="#ffd147"/><rect x="1" y="3" width="6" height="2" fill="#ffd147"/></svg>`
+        ];
+
+        for (let i = 0; i < 10; i++) {
+          const div = document.createElement('div');
+          div.className = 'particula-pixel';
+          div.innerHTML = svgsPixel[i % svgsPixel.length];
+          div.style.left = `${10 + Math.random() * 78}%`;
+          div.style.bottom = `${12 + Math.random() * 40}%`;
+          div.style.animationDelay = `${Math.random() * 0.25}s`;
+          camada.appendChild(div);
+          setTimeout(() => div.remove(), 1500);
+        }
+      }
+
+      salvarLookNoAlbum() {
+        const nomeInput = document.getElementById('input-nome-look').value;
+        const novoLook = new Look(nomeInput, this.bichinhoAtual);
+        const resultado = this.album.salvar(novoLook);
+
+        document.getElementById('modal-salvar').classList.remove('aberto');
+
+        if (!resultado.sucesso) {
+          this.mostrarToast(resultado.motivo);
+          return;
+        }
+
+        this.audio.sininhoMagico();
+        this.soltarParticulasPixel();
+        this.atualizarContadoresAlbum();
+        this.mostrarToast(`Polaroid "${novoLook.nome}" salva no álbum! 📸`);
+      }
+
+      atualizarContadoresAlbum() {
+        const total = this.album.looks.length;
+        document.getElementById('contador-album-topo').textContent = total;
+        document.getElementById('contador-album-inicio').textContent = total;
+        document.getElementById('contador-album-tela').textContent = total;
+      }
+
+      abrirTelaAlbum() {
+        this.atualizarContadoresAlbum();
+        const container = document.getElementById('container-polaroids');
+
+        if (this.album.looks.length === 0) {
+          container.innerHTML = `
+            <div class="estado-vazio" style="grid-column: 1 / -1;">
+              <span style="font-size: 2.6rem;">📸</span>
+              <h3>Seu álbum pixel ainda está vazio!</h3>
+              <p>Vista seu bichinho no Ateliê e clique em <strong>Salvar</strong> para guardar sua primeira Polaroid.</p>
+            </div>`;
+        } else {
+          container.innerHTML = this.album.looks.map((look) => {
+            const bTemp = this.reconstruirBichinhoDeSnapshot(look.bichinhoSnapshot);
+            bTemp.expressao = 'feliz';
+            return `
+              <article class="card-polaroid">
+                <div class="foto-polaroid">
+                  ${bTemp.gerarSVGCompleto({ incluirFundo: true })}
+                </div>
+                <div class="info-polaroid">
+                  <h3>${this.escaparHTML(look.nome)}</h3>
+                  <p>${bTemp.emoji} ${this.escaparHTML(bTemp.nome)} • ${look.dataCriacao}</p>
+                </div>
+                <div class="acoes-polaroid">
+                  <button type="button" class="btn-polaroid abrir" data-acao="abrir" data-id="${look.id}" aria-label="Reabrir ${look.nome} no ateliê">
+                    ✏️ Reabrir
+                  </button>
+                  <button type="button" class="btn-polaroid excluir" data-acao="excluir" data-id="${look.id}" aria-label="Excluir ${look.nome} do álbum" title="Excluir">
+                    🗑️
+                  </button>
+                </div>
+              </article>`;
+          }).join('');
+
+          container.querySelectorAll('.btn-polaroid').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const id = btn.dataset.id;
+              if (btn.dataset.acao === 'abrir') {
+                this.reabrirLookNoAtelie(id);
+              } else {
+                this.album.excluir(id);
+                this.audio.pop();
+                this.mostrarToast('Polaroid removida do álbum 🧺');
+                this.abrirTelaAlbum();
+              }
+            });
+          });
+        }
+
+        this.mostrarTela('tela-album');
+      }
+
+      reconstruirBichinhoDeSnapshot(snap) {
+        const dadosEspecie = DADOS_BICHINHOS.find((d) => d.especie === snap.especie) || DADOS_BICHINHOS[0];
+        const b = new Bichinho(dadosEspecie);
+        b.nome = snap.nome;
+        b.indiceVariante = snap.indiceVariante || 0;
+        b.corCustomizada = snap.corCustomizada || null;
+        b.cenario = snap.cenario || 'jardim';
+        snap.roupas.forEach((item) => {
+          const roupa = this.armario.obterPorId(item.roupaId);
+          if (roupa) b.vestir(roupa, item.cor);
+        });
+        return b;
+      }
+
+      reabrirLookNoAtelie(lookId) {
+        const look = this.album.abrir(lookId);
+        if (!look) return;
+        this.bichinhoAtual = this.reconstruirBichinhoDeSnapshot(look.bichinhoSnapshot);
+        this.indiceEspecieEscolha = DADOS_BICHINHOS.findIndex((d) => d.especie === this.bichinhoAtual.especie);
+        this.categoriaRecolorirAtiva = null;
+
+        document.querySelectorAll('.btn-cenario').forEach((b) => {
+          b.classList.toggle('ativo', b.dataset.cenario === this.bichinhoAtual.cenario);
+        });
+
+        this.audio.sininhoMagico();
+        this.mostrarToast(`Look "${look.nome}" carregado no ateliê! ★`);
+        this.entrarNoAtelie();
+      }
+
+      escaparHTML(texto) {
+        const div = document.createElement('div');
+        div.textContent = texto;
+        return div.innerHTML;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      window.atelieDosBichinhos = new Jogo();
+    });
+  </script>
+</body>
+</html>
